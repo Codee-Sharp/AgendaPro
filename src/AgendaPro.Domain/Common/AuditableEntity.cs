@@ -28,8 +28,8 @@ namespace AgendaPro.Domain.Common
     {
         public TId Id { get; protected set; }
     
-        public DateTimeOffset? CreatedAt { get; protected set; }
-        public string? CreatedBy { get; protected set; }
+        public DateTimeOffset CreatedAt { get; protected set; }
+        public string CreatedBy { get; protected set; }
     
         public DateTimeOffset? UpdetadAt { get; protected set; }
         public string? UpdatedBy { get; protected set; }
