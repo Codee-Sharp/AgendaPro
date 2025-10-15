@@ -2,8 +2,11 @@ using AgendaPro.Api.Extensions;
 using AgendaPro.Application.Tags.UseCase;
 using AgendaPro.Domain.Tags.Repositories;
 using AgendaPro.Infrastucture.Tags;
+using AgendaPro.Infrastucture.Data.Context;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using AgendaPro.Infrastucture;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-
+// adiciona configuracao da camada de infraestrutura
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddApplicationSwagger();
