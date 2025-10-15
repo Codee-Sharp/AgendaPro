@@ -6,6 +6,7 @@ using AgendaPro.Infrastucture.Data.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using AgendaPro.Infrastucture;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<AgendaProDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSqlConnection"));
-});
+// adiciona configuracao da camada de infraestrutura
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddApplicationSwagger();
