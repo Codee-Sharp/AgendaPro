@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using AgendaPro.Infrastucture;
+using AgendaPro.Api.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,13 @@ builder.Services.AddApplicationSwagger();
 builder.Services.AddScoped<TagUseCase>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 
+//Adiciona o Filtro
+builder.Services.AddScoped<ApiResponseValidationFilter>();
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiResponseValidationFilter>();
+});
 
 var app = builder.Build();
 
