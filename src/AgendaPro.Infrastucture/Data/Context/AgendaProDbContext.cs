@@ -1,4 +1,5 @@
-﻿using AgendaPro.Domain.Tags.Models;
+﻿using AgendaPro.Domain.Services.Models;
+using AgendaPro.Domain.Tags.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgendaPro.Infrastucture.Data.Context;
@@ -10,4 +11,5 @@ public class AgendaProDbContext : DbContext
     }
 
     public DbSet<TagModel> Tags { get; set; }
+    public DbSet<ServiceModel> Services { get; set; }
 }
