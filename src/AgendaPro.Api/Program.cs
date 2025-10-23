@@ -26,8 +26,8 @@ builder.Services.AddApplicationSwagger();
 
 builder.Services.AddScoped<TagUseCase>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+// builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 
 builder.Services.AddControllers(options =>
