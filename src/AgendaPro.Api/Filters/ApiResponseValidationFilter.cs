@@ -32,12 +32,21 @@ public class ApiResponseValidationFilter : IResultFilter
                 return;
             }
 
+            var controllerName = context.ActionDescriptor.RouteValues["controller"];
+            var actionName = context.ActionDescriptor.RouteValues["action"];
+            var methodFullName = $"{controllerName}Controller.{actionName}";
+
             if (_env.IsDevelopment() || _env.IsEnvironment("Testing"))
             {
-                throw new InvalidCastException($"retorno do controle não está no padrão ApiResponse. Tipo retornado: {value?.GetType().Name ?? "null"}");
+                throw new InvalidCastException(
+                                $"O retorno do método {methodFullName} não está no padrão ApiResponse. " +
+                                $"Tipo retornado: {value?.GetType().Name ?? "null"}");
             }
 
-            _logger.LogWarning("Resposta fora do padrão. Encapsulando automaticamente no formato ApiResponse.");
+            _logger.LogWarning(
+                        "Resposta fora do padrão no método {Method}. Encapsulando automaticamente no formato ApiResponse.",
+                        methodFullName
+                        );
 
             var wrapped = Activator.CreateInstance(typeof(ApiResponse<>)
             .MakeGenericType(value?.GetType() ?? typeof(object)),
