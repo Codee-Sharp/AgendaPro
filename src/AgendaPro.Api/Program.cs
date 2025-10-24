@@ -10,7 +10,6 @@ using AgendaPro.Infrastucture;
 using AgendaPro.Api.Filters;
 using AgendaPro.Domain.Interfaces;
 using AgendaPro.Infrastucture.Data.Repositories;
-using AgendaPro.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,8 +47,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
-app.UseMiddleware<ResponseFormatValidationMiddleware>();
 
 app.MapControllers();
 
