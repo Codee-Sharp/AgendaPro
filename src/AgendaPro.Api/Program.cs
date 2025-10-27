@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using AgendaPro.Infrastucture;
+using AgendaPro.Api.Filters;
+using AgendaPro.Domain.Interfaces;
+using AgendaPro.Infrastucture.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,8 +25,14 @@ builder.Services.AddApplicationSwagger();
 
 builder.Services.AddScoped<TagUseCase>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+// builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiResponseValidationFilter>();
+});
 
 var app = builder.Build();
 
