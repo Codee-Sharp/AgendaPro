@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AgendaPro.Domain.Tags.Repositories
+namespace AgendaPro.Domain.Services.Repositories
 {
     public interface IServiceRepository
     {
