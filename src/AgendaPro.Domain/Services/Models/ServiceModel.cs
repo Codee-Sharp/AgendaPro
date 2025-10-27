@@ -9,9 +9,32 @@ namespace AgendaPro.Domain.Services.Models
 {
     public class ServiceModel : AuditableEntity 
     {
-        public ServiceModel(Guid createdBy) : base(createdBy)
+
+        public ServiceModel(string nome, Guid createdBy)
+            : base(createdBy)
         {
+            Nome = nome;
         }
+
+
+        public ServiceModel(
+            string nome,
+            int duracaoMin,
+            decimal preco,
+            string? descricao,
+            int? categoriaInt,
+            int? intervaloInt,
+            Guid createdBy) 
+            : base(createdBy)
+        {
+            Nome = nome;
+            DuracaoMin = duracaoMin;
+            Preco = preco;
+            Descricao = descricao;
+            CategoriaId = categoriaInt;
+            IntervaloMin = intervaloInt;
+        }
+
 
         public Guid Id { get; set; }
 

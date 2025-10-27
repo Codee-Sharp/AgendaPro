@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AgendaPro.Application.Services.DTOs
 {
-    internal class ServiceDTO
+    public class ServiceDTO
     {
         public Guid? Id { get; set; }
         public string Nome { get; set; }
@@ -17,10 +17,7 @@ namespace AgendaPro.Application.Services.DTOs
         public int? CategoriaId { get; set; }
         public int? IntervaloMin { get; set; }
 
-
-        public ServiceDTO()
-        {
-        }
+        public ServiceDTO() { }
 
         public ServiceDTO(ServiceModel model)
         {
@@ -32,6 +29,5 @@ namespace AgendaPro.Application.Services.DTOs
             CategoriaId = model.CategoriaId;
             IntervaloMin = model.IntervaloMin;
         }
-
     }
 }
