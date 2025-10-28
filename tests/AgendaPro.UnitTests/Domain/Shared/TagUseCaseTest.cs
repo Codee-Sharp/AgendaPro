@@ -1,9 +1,7 @@
 using AgendaPro.Application.Tags.Dtos;
 using AgendaPro.Application.Tags.UseCase;
 using AgendaPro.Domain.Tags.Repositories;
-using AgendaPro.Domain.Shared;
 using Moq;
-using Xunit;
 
 public class TagUseCaseTest
 {

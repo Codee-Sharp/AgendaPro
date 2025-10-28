@@ -1,4 +1,4 @@
-using System;
+using AgendaPro.Domain.Shared;
 
 namespace AgendaPro.UnitTests.Domain.Shared;
 
