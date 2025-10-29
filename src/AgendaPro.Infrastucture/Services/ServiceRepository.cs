@@ -51,12 +51,12 @@ namespace AgendaPro.Infrastucture.Services
 
         // OK
         public async Task UpdateAsync(ServiceModel model)
-    {
+        {
 
             _context.Services.Update(model);
             await _context.SaveChangesAsync();
 
-    }
+        }
 
 
         // OK

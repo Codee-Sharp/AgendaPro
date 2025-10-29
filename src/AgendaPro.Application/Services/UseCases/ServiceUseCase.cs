@@ -68,25 +68,17 @@ namespace AgendaPro.Application.Services.UseCases
         // Separar conexão de dados (repository) e lógica de negócio (use case)
         public async Task UpdateAsync(Guid id, ServiceDTO serviceDTO)
         {
+            var serviceToUpdate = await _serviceRepository.GetByIdAsync(id);
 
-            var serviceToUpdate = new ServiceModel(
-                serviceDTO.Nome,
-                serviceDTO.DuracaoMin,
-                serviceDTO.Preco,
-                serviceDTO.Descricao,
-                serviceDTO.CategoriaId,
-                serviceDTO.TempoIntervaloMin,
-                id
-
-            );
-
-
-            if(serviceToUpdate == null)
-            {
-
+            if (serviceToUpdate == null)
                 throw new KeyNotFoundException("Serviço não encontrado");
 
-            }
+            serviceToUpdate.Nome = serviceDTO.Nome;
+            serviceToUpdate.DuracaoMin = serviceDTO.DuracaoMin;
+            serviceToUpdate.Preco = serviceDTO.Preco;
+            serviceToUpdate.Descricao = serviceDTO.Descricao;
+            serviceToUpdate.CategoriaId = serviceDTO.CategoriaId;
+            serviceToUpdate.TempoIntervaloMin = serviceDTO.TempoIntervaloMin;
 
             await _serviceRepository.UpdateAsync(serviceToUpdate);
 
@@ -100,9 +92,7 @@ namespace AgendaPro.Application.Services.UseCases
             var serviceToDelete = await GetByIdAsync(id);
 
             if (serviceToDelete == null)
-            {
                 throw new KeyNotFoundException("Serviço não encontrado");
-            }
 
             await _serviceRepository.DeleteAsync(id);
 
