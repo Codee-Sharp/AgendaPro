@@ -12,24 +12,19 @@ namespace AgendaPro.Api.Controllers
     [Route("api/services")]
     public class ServicesController : ControllerBase
     {
-
-        private readonly AgendaProDbContext _context;
         private readonly ServiceUseCase _serviceUseCase;
 
-        public ServicesController(AgendaProDbContext context, ServiceUseCase serviceUseCase)
+        public ServicesController( ServiceUseCase serviceUseCase)
         {
-
-            _context = context;
             _serviceUseCase = serviceUseCase;
 
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
 
-            var getListOfServices = _context.Services.ToList();
+            var getListOfServices = await _serviceUseCase.GetAllAsync();
 
             return Ok(getListOfServices);
 
@@ -39,7 +34,7 @@ namespace AgendaPro.Api.Controllers
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
 
-            var getServiceById = _context.Services.SingleOrDefault(j => j.Id == id);
+            var getServiceById = await _serviceUseCase.GetByIdAsync(id);
 
             if (getServiceById == null)
             {
@@ -50,9 +45,6 @@ namespace AgendaPro.Api.Controllers
 
         }
 
-
-
-
         [HttpPost]
         public async Task<IActionResult> PostAsync(ServiceDTO serviceDTO)
         {
@@ -61,46 +53,18 @@ namespace AgendaPro.Api.Controllers
             return Ok(response);
         }
 
-
-
-
-
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, ServiceModel sm)
+        public async Task<IActionResult> UpdateAsync(Guid id, ServiceDTO serviceDTO)
         {
-
-            var serviceToUpdate = _context.Services.SingleOrDefault(j => j.Id == id);
-
-            if (serviceToUpdate == null)
-            {
-                return NotFound();
-            }
-
-            sm.UpdateService(sm.Nome, sm.DuracaoMin, sm.Preco, sm.Descricao, sm.CategoriaId, sm.IntervaloMin);
-            
-            _context.Update(serviceToUpdate);
-
-            _context.SaveChanges();
-
+            await _serviceUseCase.UpdateAsync(id, serviceDTO);
             return NoContent();
-
         }
-
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
 
-            var serviceToDelete = _context.Services.SingleOrDefault(j => j.Id == id);
-
-            if (serviceToDelete == null)
-            {
-                return NotFound();
-            }
-
-            _context.Remove(serviceToDelete);
-            
-            _context.SaveChanges();
+            await _serviceUseCase.DeleteAsync(id);
 
             return NoContent();
 

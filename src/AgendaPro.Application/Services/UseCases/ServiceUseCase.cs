@@ -1,6 +1,8 @@
 ﻿using AgendaPro.Application.Services.DTOs;
 using AgendaPro.Domain.Services.Models;
 using AgendaPro.Domain.Services.Repositories;
+using AgendaPro.Infrastucture.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,13 @@ namespace AgendaPro.Application.Services.UseCases
 {
     public class ServiceUseCase
     {
-
         private readonly IServiceRepository _serviceRepository;
         
+        public ServiceUseCase(IServiceRepository serviceRepository)
+        {
+            _serviceRepository = serviceRepository;
+        }
+
         public async Task<ServiceDTO> CreateAsync(ServiceDTO serviceDTO)
         {
             var userId = Guid.Empty;
@@ -24,6 +30,70 @@ namespace AgendaPro.Application.Services.UseCases
 
             var response = new ServiceDTO(model);
             return response;
+        }
+
+
+        // Implementar lógica de negócio chamando IRepository
+
+        public async Task<ServiceModel> GetByIdAsync(Guid id)
+        {
+
+            var findOneService = await GetByIdAsync(id);
+
+            if (findOneService == null)
+            {
+                throw new KeyNotFoundException("Serviço não encontrado");
+            }
+
+            return findOneService;
+        }
+
+        // Separar conexão de dados (repository) e lógica de negócio (use case)
+
+        public async Task<IEnumerable<ServiceModel>> GetAllAsync()
+        {
+
+            return await GetAllAsync();
+
+        }
+
+        // Separar conexão de dados (repository) e lógica de negócio (use case)
+        public async Task UpdateAsync(Guid id, ServiceDTO serviceDTO)
+        {
+
+            var serviceToUpdate = new ServiceModel(
+                serviceDTO.Nome,
+                serviceDTO.DuracaoMin,
+                serviceDTO.Preco,
+                serviceDTO.Descricao,
+                serviceDTO.CategoriaId,
+                serviceDTO.IntervaloMin,
+                id
+            );
+
+            if(serviceToUpdate == null)
+            {
+                throw new KeyNotFoundException("Serviço não encontrado");
+            }
+
+            await _serviceRepository.UpdateAsync(serviceToUpdate);
+
+        }
+
+
+        // Separar conexão de dados (repository) e lógica de negócio (use case)
+        public async Task DeleteAsync(Guid id)
+        {
+
+            var serviceToDelete = await GetByIdAsync(id);
+
+            if (serviceToDelete == null)
+            {
+                throw new KeyNotFoundException("Serviço não encontrado");
+            }
+
+            await _serviceRepository.DeleteAsync(id);
+
         }
     }
 }

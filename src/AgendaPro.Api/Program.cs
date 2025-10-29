@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using AgendaPro.Infrastucture;
+using AgendaPro.Application.Services.UseCases;
+using AgendaPro.Domain.Services.Repositories;
+using AgendaPro.Infrastucture.Services; // Add the correct using directive for ServiceRepository
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,9 @@ builder.Services.AddApplicationSwagger();
 
 builder.Services.AddScoped<TagUseCase>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+
+builder.Services.AddScoped<ServiceUseCase>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
 
 

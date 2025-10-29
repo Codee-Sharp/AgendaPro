@@ -10,9 +10,18 @@ namespace AgendaPro.Domain.Services.Repositories
     public interface IServiceRepository
     {
         Task SaveAsync(ServiceModel model);
-        Task<ServiceModel> GetByIdAsync(Guid id);
+
+        // get by id
+        Task<ServiceModel?> GetByIdAsync(Guid id);
+
+        // list all 
         Task<IEnumerable<ServiceModel>> GetAllAsync();
-        Task DeleteAsync(Guid id);
+
+        // update
         Task UpdateAsync(ServiceModel model);
+
+        // delete
+        Task DeleteAsync(Guid id);
+
     }
 }

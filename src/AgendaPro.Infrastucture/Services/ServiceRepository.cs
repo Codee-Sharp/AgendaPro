@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AgendaPro.Infrastucture.Services
 {
-    internal class ServiceRepository : IServiceRepository
+    public class ServiceRepository : IServiceRepository
     {
 
         private readonly AgendaProDbContext _context;
@@ -22,6 +22,7 @@ namespace AgendaPro.Infrastucture.Services
         
         }
 
+        // OK
 
         public Task SaveAsync(ServiceModel model)
         {
@@ -30,69 +31,39 @@ namespace AgendaPro.Infrastucture.Services
         
         }
 
+        // OK
 
+        public async Task<ServiceModel?> GetByIdAsync(Guid id)
+        {
+
+            return await _context.Services.FindAsync(id);
+
+        }
+
+        // OK
         public async Task<IEnumerable<ServiceModel>> GetAllAsync()
         {
-            
-            var getAll = await _context.Services.ToListAsync();
-
-            return getAll;
         
+            return await _context.Services.ToListAsync();
+
         }
 
-
-        public async Task<ServiceModel> GetByIdAsync(Guid id)
-        {
-        
-            var findOneService = await _context.Services.FindAsync(id);
-
-            if (findOneService == null)
-            {
-                throw new KeyNotFoundException("Serviço não encontrado");
-            }
-
-            return findOneService;
-        }
-
-
+        // OK
         public async Task UpdateAsync(ServiceModel model)
-        {
-            
-            var serviceToUpdate = await _context.Services.FindAsync(model.Id);
-           
-            if (serviceToUpdate == null)
-            {
-                throw new KeyNotFoundException("Serviço não encontrado");
-            }
-
-            serviceToUpdate.Nome = model.Nome;
-            serviceToUpdate.DuracaoMin = model.DuracaoMin;
-            serviceToUpdate.Preco = model.Preco;
-            serviceToUpdate.Descricao = model.Descricao;
-            serviceToUpdate.CategoriaId = model.CategoriaId;
-            serviceToUpdate.IntervaloMin = model.IntervaloMin;
-
-            _context.Services.Update(serviceToUpdate);
-            
+    {
+            _context.Services.Update(model);
             await _context.SaveChangesAsync();
-        
-        }
+    }
 
 
+        // OK
         public async Task DeleteAsync(Guid id)
         {
-        
-            var serviceToDelete = await _context.Services.FindAsync(id);
-            
-            if (serviceToDelete == null)
-            {
-                throw new KeyNotFoundException("Serviço não encontrado");
-            }
 
+            var serviceToDelete = await _context.Services.FindAsync(id);
             _context.Services.Remove(serviceToDelete);
-            
             await _context.SaveChangesAsync();
-        
+
         }
 
 

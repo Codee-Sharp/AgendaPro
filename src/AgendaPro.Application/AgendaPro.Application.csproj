@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgendaPro.Domain\AgendaPro.Domain.csproj" />
+    <ProjectReference Include="..\AgendaPro.Infrastucture\AgendaPro.Infrastucture.csproj" />
   </ItemGroup>
 
   <ItemGroup>

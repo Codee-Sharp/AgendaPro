@@ -9,14 +9,12 @@ namespace AgendaPro.Domain.Services.Models
 {
     public class ServiceModel : AuditableEntity 
     {
-
         public ServiceModel(string nome, Guid createdBy)
             : base(createdBy)
         {
             Nome = nome;
-        }
-
-
+        } 
+        
         public ServiceModel(
             string nome,
             int duracaoMin,
@@ -35,7 +33,6 @@ namespace AgendaPro.Domain.Services.Models
             IntervaloMin = intervaloInt;
         }
 
-
         public Guid Id { get; set; }
 
         // obrigatorio
@@ -50,7 +47,6 @@ namespace AgendaPro.Domain.Services.Models
         public int? CategoriaId { get; set; }
         public int? IntervaloMin { get; set; } = 0;
     
-
         public void UpdateService(string nome, int duracaoMin, decimal preco, string? descricao, int? categoriaId, int? intervaloMin)
         {
             Nome = nome;
