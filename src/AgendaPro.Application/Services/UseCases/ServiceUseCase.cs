@@ -44,7 +44,7 @@ namespace AgendaPro.Application.Services.UseCases
         public async Task<ServiceModel> GetByIdAsync(Guid id)
         {
 
-            var findOneService = await GetByIdAsync(id);
+            var findOneService = await _serviceRepository.GetByIdAsync(id);
 
             if (findOneService == null)
             {
@@ -60,7 +60,7 @@ namespace AgendaPro.Application.Services.UseCases
         public async Task<IEnumerable<ServiceModel>> GetAllAsync()
         {
 
-            return await GetAllAsync();
+            return await _serviceRepository.GetAllAsync();
 
         }
 
