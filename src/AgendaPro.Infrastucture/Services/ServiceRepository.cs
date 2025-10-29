@@ -24,10 +24,11 @@ namespace AgendaPro.Infrastucture.Services
 
         // OK
 
-        public Task SaveAsync(ServiceModel model)
+        public async Task SaveAsync(ServiceModel model)
         {
-        
-            return Task.CompletedTask;
+
+            _context.Services.Add(model);
+            await _context.SaveChangesAsync();
         
         }
 
