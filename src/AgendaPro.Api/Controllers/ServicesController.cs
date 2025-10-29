@@ -20,6 +20,7 @@ namespace AgendaPro.Api.Controllers
 
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -29,6 +30,7 @@ namespace AgendaPro.Api.Controllers
             return Ok(getListOfServices);
 
         }
+
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
@@ -45,19 +47,28 @@ namespace AgendaPro.Api.Controllers
 
         }
 
+
         [HttpPost]
         public async Task<IActionResult> PostAsync(ServiceDTO serviceDTO)
         {
+
             var result = await _serviceUseCase.CreateAsync(serviceDTO);
+
             var response = new ApiResponse<ServiceDTO>(result);
+            
             return Ok(response);
+        
         }
+
 
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateAsync(Guid id, ServiceDTO serviceDTO)
         {
+        
             await _serviceUseCase.UpdateAsync(id, serviceDTO);
+            
             return NoContent();
+        
         }
 
         [HttpDelete("{id:guid}")]
