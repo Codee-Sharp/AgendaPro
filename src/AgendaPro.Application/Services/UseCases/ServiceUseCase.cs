@@ -29,7 +29,16 @@ namespace AgendaPro.Application.Services.UseCases
 
             var userId = Guid.Empty;
 
-            var model = new ServiceModel(serviceDTO.Nome, userId);
+            var model = new ServiceModel
+                (
+                serviceDTO.Nome,
+                serviceDTO.DuracaoMin,
+                serviceDTO.Preco,
+                serviceDTO.Descricao,
+                serviceDTO.CategoriaId,
+                serviceDTO.TempoIntervaloMin,
+                userId
+                );
 
             await _serviceRepository.SaveAsync(model);
 
