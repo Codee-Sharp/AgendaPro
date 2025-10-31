@@ -38,11 +38,6 @@ namespace AgendaPro.Api.Controllers
 
             var getServiceById = await _serviceUseCase.GetByIdAsync(id);
 
-            if (getServiceById == null)
-            {
-                return NotFound();
-            }
-
             return Ok(getServiceById);
 
         }
