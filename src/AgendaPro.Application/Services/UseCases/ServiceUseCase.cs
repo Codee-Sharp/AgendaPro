@@ -1,8 +1,6 @@
 ﻿using AgendaPro.Application.Services.DTOs;
 using AgendaPro.Domain.Services.Models;
 using AgendaPro.Domain.Services.Repositories;
-using AgendaPro.Infrastucture.Data.Context;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
