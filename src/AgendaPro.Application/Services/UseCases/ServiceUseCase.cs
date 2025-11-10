@@ -80,12 +80,15 @@ namespace AgendaPro.Application.Services.UseCases
             if (serviceToUpdate == null)
                 throw new KeyNotFoundException("Serviço não encontrado");
 
-            serviceToUpdate.Nome = serviceDTO.Nome;
-            serviceToUpdate.DuracaoMin = serviceDTO.DuracaoMin;
-            serviceToUpdate.Preco = serviceDTO.Preco;
-            serviceToUpdate.Descricao = serviceDTO.Descricao;
-            serviceToUpdate.CategoriaId = serviceDTO.CategoriaId;
-            serviceToUpdate.TempoIntervaloMin = serviceDTO.TempoIntervaloMin;
+            serviceToUpdate.UpdateService(
+                serviceDTO.Nome,
+                serviceDTO.DuracaoMin,
+                serviceDTO.Preco,
+                serviceDTO.Descricao,
+                serviceDTO.CategoriaId,
+                serviceDTO.TempoIntervaloMin
+            );
+        
 
             await _serviceRepository.UpdateAsync(serviceToUpdate);
 
