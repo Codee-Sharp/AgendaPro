@@ -10,6 +10,11 @@ namespace AgendaPro.Domain.Services.Models
 {
     public class ServiceModel : AuditableEntity 
     {
+
+        public const int duracaoMinimaEmMinutos = 1;
+        public const int duracaoMaximaEmHoras = 8;
+        public const int duracaoMaximaEmMinutos = duracaoMaximaEmHoras * 60;
+
         public ServiceModel(string nome, Guid createdBy)
             : base(createdBy)
         {
@@ -43,7 +48,7 @@ namespace AgendaPro.Domain.Services.Models
 
         // obrigatorio + em minutos
         [Required]
-        [Range(1,480, ErrorMessage = "A duração deve estar entre 1 e 480 minutos")] // entre 1 min e 8 horas
+        [Range(duracaoMinimaEmMinutos,duracaoMaximaEmMinutos, ErrorMessage = "A duração deve estar entre 1 minuto e 8 horas")]
         public int DuracaoMin { get; set; }
 
         // obrigatorio
