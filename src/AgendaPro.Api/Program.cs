@@ -25,11 +25,17 @@ builder.Services.AddApplicationSwagger();
 
 builder.Services.AddScoped<TagUseCase>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+// builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<ServiceUseCase>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiResponseValidationFilter>();
+});
 
 var app = builder.Build();
 
