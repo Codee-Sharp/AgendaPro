@@ -3,6 +3,7 @@ using System;
 using AgendaPro.Infrastucture.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AgendaPro.Infrastucture.Data.Migrations
 {
     [DbContext(typeof(AgendaProDbContext))]
-    partial class AgendaProDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251022003132_addServices")]
+    partial class addServices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,6 +52,9 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                     b.Property<int>("DuracaoMin")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("IntervaloMin")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -58,9 +64,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
                     b.Property<decimal>("Preco")
                         .HasColumnType("numeric");
-
-                    b.Property<int?>("TempoIntervaloMin")
-                        .HasColumnType("integer");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
