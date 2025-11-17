@@ -9,7 +9,10 @@ using Microsoft.Extensions.Options;
 using AgendaPro.Infrastucture;
 using AgendaPro.Application.Services.UseCases;
 using AgendaPro.Domain.Services.Repositories;
-using AgendaPro.Infrastucture.Services; // Add the correct using directive for ServiceRepository
+using AgendaPro.Infrastucture.Services;
+using AgendaPro.Domain.Interfaces;
+using AgendaPro.Infrastucture.Data.Repositories;
+using AgendaPro.Api.Filters; // Add the correct using directive for ServiceRepository
 
 var builder = WebApplication.CreateBuilder(args);
 

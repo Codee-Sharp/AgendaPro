@@ -1,6 +1,7 @@
 ﻿using AgendaPro.Application.Services.DTOs;
 using AgendaPro.Domain.Services.Models;
 using AgendaPro.Domain.Services.Repositories;
+using AgendaPro.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        public async Task<ServiceDTO> CreateAsync(ServiceDTO serviceDTO)
+        public async Task<Result<ServiceDTO>> CreateAsync(ServiceDTO serviceDTO)
         {
 
             var userId = Guid.Empty;
@@ -42,13 +43,13 @@ namespace AgendaPro.Application.Services.UseCases
 
             var response = new ServiceDTO(model);
 
-            return response;
+            return Result<ServiceDTO>.Success(response);
 
         }
 
 
         // Implementar lógica de negócio chamando IRepository
-        public async Task<ServiceModel> GetByIdAsync(Guid id)
+        public async Task<Result<ServiceModel>> GetByIdAsync(Guid id)
         {
 
             var findOneService = await _serviceRepository.GetByIdAsync(id);
@@ -58,22 +59,22 @@ namespace AgendaPro.Application.Services.UseCases
                 throw new KeyNotFoundException("Serviço não encontrado");
             }
 
-            return findOneService;
+            return Result<ServiceModel>.Success(findOneService);
 
         }
 
 
         // Separar conexão de dados (repository) e lógica de negócio (use case)
-        public async Task<IEnumerable<ServiceModel>> GetAllAsync()
+        public async Task<Result<IEnumerable<ServiceModel>>> GetAllAsync()
         {
-
-            return await _serviceRepository.GetAllAsync();
+            var servicesResult = await _serviceRepository.GetAllAsync(); ///////////////////////////////////////////////////////// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -AQUI
+            return Result<IEnumerable<ServiceModel>>.Success(servicesResult);
 
         }
 
 
         // Separar conexão de dados (repository) e lógica de negócio (use case)
-        public async Task UpdateAsync(Guid id, ServiceDTO serviceDTO)
+        public async Task<Result<bool>> UpdateAsync(Guid id, ServiceDTO serviceDTO)
         {
             var serviceToUpdate = await _serviceRepository.GetByIdAsync(id);
 
@@ -92,11 +93,13 @@ namespace AgendaPro.Application.Services.UseCases
 
             await _serviceRepository.UpdateAsync(serviceToUpdate);
 
+            return Result<bool>.Success(true);
+
         }
 
 
         // Separar conexão de dados (repository) e lógica de negócio (use case)
-        public async Task DeleteAsync(Guid id)
+        public async Task<Result<bool>> DeleteAsync(Guid id)
         {
 
             var serviceToDelete = await GetByIdAsync(id);
@@ -105,6 +108,8 @@ namespace AgendaPro.Application.Services.UseCases
                 throw new KeyNotFoundException("Serviço não encontrado");
 
             await _serviceRepository.DeleteAsync(id);
+
+            return Result<bool>.Success(true);
 
         }
     }
