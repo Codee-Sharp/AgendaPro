@@ -5,6 +5,9 @@ using AgendaPro.Infrastucture.Data.Context;
 using AgendaPro.Application.Services.DTOs;
 using AgendaPro.Application.Services.UseCases;
 using AgendaPro.Api.Wrappers;
+using Microsoft.Build.Tasks;
+using AgendaPro.Domain.Shared;
+using AgendaPro.Api.Extensions;
 
 namespace AgendaPro.Api.Controllers
 {
@@ -25,9 +28,11 @@ namespace AgendaPro.Api.Controllers
         public async Task<IActionResult> GetAllAsync()
         {
 
-            var getListOfServices = await _serviceUseCase.GetAllAsync();
+            var result = await _serviceUseCase.GetAllAsync();
 
-            return Ok(getListOfServices);
+
+
+            return result.ToActionResult();
 
         }
 
@@ -36,9 +41,9 @@ namespace AgendaPro.Api.Controllers
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
 
-            var getServiceById = await _serviceUseCase.GetByIdAsync(id);
+            var result = await _serviceUseCase.GetByIdAsync(id);
 
-            return Ok(getServiceById);
+            return result.ToActionResult();
 
         }
 
@@ -49,10 +54,9 @@ namespace AgendaPro.Api.Controllers
 
             var result = await _serviceUseCase.CreateAsync(serviceDTO);
 
-            var response = new ApiResponse<ServiceDTO>(result);
-            
-            return Ok(response);
-        
+            return result.ToActionResult();
+
+
         }
 
 
@@ -60,9 +64,9 @@ namespace AgendaPro.Api.Controllers
         public async Task<IActionResult> UpdateAsync(Guid id, ServiceDTO serviceDTO)
         {
         
-            await _serviceUseCase.UpdateAsync(id, serviceDTO);
-            
-            return NoContent();
+            var result = await _serviceUseCase.UpdateAsync(id, serviceDTO);
+
+            return result.ToActionResult();
         
         }
 
@@ -70,9 +74,9 @@ namespace AgendaPro.Api.Controllers
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
 
-            await _serviceUseCase.DeleteAsync(id);
+            var result = await _serviceUseCase.DeleteAsync(id);
 
-            return NoContent();
+            return result.ToActionResult();
 
         }
     }
