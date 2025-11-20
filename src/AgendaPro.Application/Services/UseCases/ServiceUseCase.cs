@@ -67,7 +67,7 @@ namespace AgendaPro.Application.Services.UseCases
         // Separar conexão de dados (repository) e lógica de negócio (use case)
         public async Task<Result<IEnumerable<ServiceModel>>> GetAllAsync()
         {
-            var servicesResult = await _serviceRepository.GetAllAsync(); ///////////////////////////////////////////////////////// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< -AQUI
+            var servicesResult = await _serviceRepository.GetAllAsync();
             return Result<IEnumerable<ServiceModel>>.Success(servicesResult);
 
         }

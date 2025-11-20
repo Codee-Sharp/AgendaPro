@@ -1,6 +1,4 @@
-using System;
 using System.Collections.ObjectModel;
-using Microsoft.EntityFrameworkCore.Update;
 
 namespace AgendaPro.Domain.Shared
 {
