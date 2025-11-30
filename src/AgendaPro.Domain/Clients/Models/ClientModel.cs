@@ -6,7 +6,7 @@ using System.Text;
 
 namespace AgendaPro.Domain.Clients.Models
 {
-    internal class ClientModel : AuditableEntity
+    public class ClientModel : AuditableEntity
     {
 
         public Guid Id { get; private set; }
