@@ -1,4 +1,6 @@
-﻿using AgendaPro.Domain.Tags.Repositories;
+﻿using AgendaPro.Domain.Services.Repositories;
+using AgendaPro.Domain.Tags.Repositories;
+using AgendaPro.Infrastucture.Categories;
 using AgendaPro.Infrastucture.Data.Context;
 using AgendaPro.Infrastucture.Tags;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +36,7 @@ public static class InfrastructureExtensions
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         return services;
     }
 }
