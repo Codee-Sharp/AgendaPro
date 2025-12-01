@@ -5,12 +5,12 @@ using System.Text;
 
 namespace AgendaPro.Domain.Clients.Repositories
 {
-    internal interface IClientRepository
+    public interface IClientRepository
     {
 
         Task SaveAsync(ClientModel model);
 
-        Task<ClientModel> GetByIdAsync(Guid id);
+        Task<ClientModel?> GetByIdAsync(Guid id);
 
         Task<IEnumerable<ClientModel>> GetAllAsync();
 
