@@ -12,7 +12,8 @@ using AgendaPro.Domain.Services.Repositories;
 using AgendaPro.Infrastucture.Services;
 using AgendaPro.Domain.Interfaces;
 using AgendaPro.Infrastucture.Data.Repositories;
-using AgendaPro.Api.Filters; // Add the correct using directive for ServiceRepository
+using AgendaPro.Api.Filters;
+using AgendaPro.Application.Categories.UseCases; // Add the correct using directive for ServiceRepository
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<ServiceUseCase>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<CategoryUseCase>();
 
 
 builder.Services.AddControllers(options =>
