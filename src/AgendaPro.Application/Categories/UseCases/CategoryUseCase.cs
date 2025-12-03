@@ -14,7 +14,6 @@ public class CategoryUseCase
         _categoryRepository = categoryRepository;
     }
 
-
     public async Task<Result<IEnumerable<CategoryDto>>> GetAllAsync(CancellationToken cancellationToken)
     {
         var categories = await _categoryRepository.GetAllAsync(cancellationToken);
@@ -37,16 +36,11 @@ public class CategoryUseCase
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
 
         if (category is null)
-            return Result<CategoryDto>.Failure(new Error("TAG001: NOT_FOUND", "Category not found"));
-        
-        var model = new CategoryDto
-        {
-            Id = category.Id,
-            Name = category.Name,
-            Description = category.Description
-        };
+            return Result<CategoryDto>.Failure(new Error("NOT_FOUND", "Category not found"));
 
-        return Result<CategoryDto>.Success(model);
+        var response = CategoryDto.FromModel(category);
+        
+        return Result<CategoryDto>.Success(response);
     }
 
     public async Task<Result<CategoryDto>> CreateAsync(CreateCategoryDto categoryDTO, CancellationToken cancellationToken)
@@ -57,24 +51,15 @@ public class CategoryUseCase
         if(existingCategory != null) 
             return Result<CategoryDto>.Failure(new Error("DUPLICATE_NAME", "A category with the same name already exists."));
 
-        var userId = Guid.Empty;
+        var userId = Guid.Empty; // enquanto nao implementa autenticacao
 
-        var model = new CategoryModel(
-            categoryDTO.Name,
-            categoryDTO.Description,
-            userId
-        );
-
+        var model = categoryDTO.ToModel(userId);
+       
         _categoryRepository.Add(model);
 
         await _categoryRepository.SaveChangesAsync(cancellationToken);
 
-        var response = new CategoryDto
-        {
-            Id = model.Id,
-            Name = model.Name,
-            Description = model.Description
-        };
+        var response = CategoryDto.FromModel(model);
 
         return Result<CategoryDto>.Success(response);
     }
@@ -84,7 +69,7 @@ public class CategoryUseCase
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
 
         if (category is null)
-            return Result<CategoryDto>.Failure(new Error("TAG001: NOT_FOUND", "Category not found"));
+            return Result<CategoryDto>.Failure(new Error("NOT_FOUND", "Category not found"));
 
         category.Update(categoryDTO.Name, categoryDTO.Description);
 
@@ -93,12 +78,7 @@ public class CategoryUseCase
 
         await _categoryRepository.SaveChangesAsync(cancellationToken);
 
-        var response = new CategoryDto
-        {
-            Id = category.Id,
-            Name = category.Name,
-            Description = category.Description
-        };
+        var response = CategoryDto.FromModel(category);
 
         return Result<CategoryDto>.Success(response);
     }
@@ -108,7 +88,7 @@ public class CategoryUseCase
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
 
         if (category is null)
-            return Result<bool>.Failure(new Error("TAG001: NOT_FOUND", "Category not found"));
+            return Result<bool>.Failure(new Error("NOT_FOUND", "Category not found"));
 
         _categoryRepository.Delete(category);
 

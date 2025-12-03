@@ -4,8 +4,8 @@ namespace AgendaPro.Domain.Services.Models;
 
 public class CategoryModel : AuditableEntity
 {
-    public string Name { get; set; }
-    public string? Description { get; set; }
+    public string Name { get; private set; }
+    public string? Description { get; private set; }
 
     public CategoryModel(string name, string? description,  Guid createdBy) : base(createdBy)
     {
