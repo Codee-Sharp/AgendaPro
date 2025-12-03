@@ -17,12 +17,11 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         var result = await _categoryUseCase.GetAllAsync(cancellationToken);
 
         return result.ToActionResult();
-
     }
 
     [HttpGet("{id:guid}")]
@@ -34,7 +33,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostAsync( CreateCategoryDto categoryDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create( CreateCategoryDto categoryDto, CancellationToken cancellationToken)
     {
 
         var result = await _categoryUseCase.CreateAsync(categoryDto, cancellationToken);
@@ -43,7 +42,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> PutAsync(Guid id, UpdateCategoryDto categoryDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(Guid id, UpdateCategoryDto categoryDto, CancellationToken cancellationToken)
     {
         var result = await _categoryUseCase.UpdateAsync(id, categoryDto, cancellationToken);
 
@@ -51,14 +50,10 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         var result = await _categoryUseCase.DeleteAsync(id, cancellationToken);
 
         return result.ToActionResult();
     }
-
-
-
-
 }
