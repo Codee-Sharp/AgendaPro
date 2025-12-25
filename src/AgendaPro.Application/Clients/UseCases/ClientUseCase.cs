@@ -32,7 +32,7 @@ namespace AgendaPro.Application.Clients.UseCases
                 clientDTO.Email,
                 clientDTO.Telephone,
                 clientDTO.Observations,
-                clienId
+                clientId
             );
 
             await _clientRepository.SaveAsync(model);
@@ -40,6 +40,63 @@ namespace AgendaPro.Application.Clients.UseCases
             var response = new ClientDTO(model);
 
             return Result<ClientDTO>.Success(response);
+
+        }
+
+        public async Task<Result<ClientModel>> GetByIdAsync(Guid id)
+        {
+
+            var findOneClient = await _clientRepository.GetByIdAsync(id);
+
+            if (findOneClient == null)
+            {
+                throw new KeyNotFoundException("Cliente não encontrado");
+            }
+
+            return Result<ClientModel>.Success(findOneClient);
+        }
+
+        public async Task<Result<IEnumerable<ClientModel>>> GetAllAsync()
+        {
+
+            var clients = await _clientRepository.GetAllAsync();
+
+            return Result<IEnumerable<ClientModel>>.Success(clients);
+
+        }
+
+        public async Task<Result<bool>> UpdateAsync(Guid id, ClientDTO clientDTO)
+        {
+
+            var clientToUpdate = await _clientRepository.GetByIdAsync(id);
+
+            if (clientToUpdate == null)
+                throw new KeyNotFoundException("Cliente não encontrado");
+
+            clientToUpdate.Update(
+                clientDTO.Name,
+                clientDTO.Email,
+                clientDTO.Telephone,
+                clientDTO.Observations
+            );
+
+            await _clientRepository.UpdateAsync(clientToUpdate);
+
+            return Result<bool>.Success(true);
+
+        }
+
+        public async Task<Result<bool>> DeleteAsync(Guid id)
+        {
+
+            var clientToDelete = await GetByIdAsync(id);
+
+            if(clientToDelete == null)
+                throw new KeyNotFoundException("Cliente não encontrado");
+
+            await _clientRepository.DeleteAsync(id);
+
+            return Result<bool>.Success(true);
 
         }
 

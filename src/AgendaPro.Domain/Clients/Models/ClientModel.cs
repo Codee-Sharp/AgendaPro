@@ -15,11 +15,15 @@ namespace AgendaPro.Domain.Clients.Models
         public string? Telephone { get; private set; }
         public string? Observations { get; private set; }
 
-        public ClientModel(Guid createdBy, string name, string? email, string? telephone, string? observations)
+        public ClientModel(string name, string? email, string? telephone, string? observations, Guid createdBy)
             : base(createdBy)
         {
-            SetName(name);
-            
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Nome é obrigatório.", nameof(name));
+            }
+
+            Name = name;
             Email = email;
             Telephone = telephone;
             Observations = observations;
@@ -28,19 +32,10 @@ namespace AgendaPro.Domain.Clients.Models
 
         public void Update(string name, string? email, string? telephone, string? observations)
         {
-            SetName(name);
+            Name = name;
             Email = email;
             Telephone = telephone;
             Observations = observations;
-        }
-
-        public void SetName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Nome é obrigatório.", nameof(name));
-            }
-            Name = name;
         }
 
 
