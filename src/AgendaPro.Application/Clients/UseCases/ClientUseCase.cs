@@ -9,7 +9,7 @@ using System.Text;
 
 namespace AgendaPro.Application.Clients.UseCases
 {
-    internal class ClientUseCase
+    public class ClientUseCase
     {
 
         private readonly IClientRepository _clientRepository;
@@ -24,6 +24,7 @@ namespace AgendaPro.Application.Clients.UseCases
 
         public async Task<Result<ClientDTO>> CreateAsync(ClientDTO clientDTO)
         {
+
             var clientId = Guid.Empty;
 
             var model = new ClientModel
@@ -43,6 +44,7 @@ namespace AgendaPro.Application.Clients.UseCases
 
         }
 
+
         public async Task<Result<ClientModel>> GetByIdAsync(Guid id)
         {
 
@@ -56,6 +58,7 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<ClientModel>.Success(findOneClient);
         }
 
+
         public async Task<Result<IEnumerable<ClientModel>>> GetAllAsync()
         {
 
@@ -64,6 +67,7 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<IEnumerable<ClientModel>>.Success(clients);
 
         }
+
 
         public async Task<Result<bool>> UpdateAsync(Guid id, ClientDTO clientDTO)
         {
@@ -85,6 +89,7 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<bool>.Success(true);
 
         }
+
 
         public async Task<Result<bool>> DeleteAsync(Guid id)
         {

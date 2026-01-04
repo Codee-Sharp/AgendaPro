@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AgendaPro.Application.Clients.UseCases;
+using AgendaPro.Domain.Shared;
+using Microsoft.AspNetCore.Mvc;
+using AgendaPro.Api.Extensions;
+using AgendaPro.Application.Clients.DTOs;
+
 
 namespace AgendaPro.Api.Controllers
 {
@@ -6,34 +11,69 @@ namespace AgendaPro.Api.Controllers
     [Route("api/[controller]")]
     public class ClientsController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetAll()
+
+        private readonly ClientUseCase _clientUseCase;
+
+        public ClientsController(ClientUseCase clientUseCase)
         {
-            return Ok();
+
+            _clientUseCase = clientUseCase;
+
         }
 
-        [HttpGet("{id:int}")]
-        public IActionResult GetById(int id)
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
         {
-            return Ok();
+
+            var result = await _clientUseCase.GetAllAsync();
+
+            return result.ToActionResult();
+
         }
+
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
+        {
+
+            var result = await _clientUseCase.GetByIdAsync(id);
+            
+            return result.ToActionResult();
+        
+        }
+
 
         [HttpPost]
-        public IActionResult Post()
+        public async Task<IActionResult> PostAsync(ClientDTO clientDTO)
         {
-            return Ok();
+
+            var result = await _clientUseCase.CreateAsync(clientDTO);
+        
+            return result.ToActionResult();
+        
         }
 
-        [HttpPut("{id:int}")]
-        public IActionResult Put(int id)
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateAsync(Guid id, ClientDTO clientDTO)
         {
-            return Ok();
+
+            var result = await _clientUseCase.UpdateAsync(id, clientDTO);
+
+            return result.ToActionResult();
+        
         }
 
-        [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            return Ok();
+
+            var result = await _clientUseCase.DeleteAsync(id);
+        
+            return result.ToActionResult();
+        
         }
 
     }
