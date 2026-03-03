@@ -48,14 +48,14 @@ namespace AgendaPro.Application.Clients.UseCases
         public async Task<Result<ClientModel>> GetByIdAsync(Guid id)
         {
 
-            var findOneClient = await _clientRepository.GetByIdAsync(id);
+            var findClientById = await _clientRepository.GetByIdAsync(id);
 
-            if (findOneClient == null)
+            if (findClientById == null)
             {
                 throw new KeyNotFoundException("Cliente não encontrado");
             }
 
-            return Result<ClientModel>.Success(findOneClient);
+            return Result<ClientModel>.Success(findClientById);
         }
 
 
@@ -103,6 +103,19 @@ namespace AgendaPro.Application.Clients.UseCases
 
             return Result<bool>.Success(true);
 
+        }
+
+        )
+        public async Task<Result<IEnumerable<ClientModel>>> FilterByNameLike(string name)
+        {
+            var clientByName = await _clientRepository.FilterByNameLike(name);
+            return Result<IEnumerable<ClientModel>>.Success(clientByName);
+        }
+
+        public async Task<Result<ClientModel>> FilterByEmailLike(string email)
+        {
+            var clientByEmail = await _clientRepository.FilterByEmailLike(email);
+            return Result<ClientModel>.Success(clientByEmail);
         }
 
 

@@ -76,5 +76,25 @@ namespace AgendaPro.Api.Controllers
         
         }
 
+        [HttpGet("filter-by-name")]
+        public async Task<IActionResult>FilterByNameLike([FromQuery]string name)
+        {
+
+            var result = await _clientUseCase.FilterByNameLike(name);
+
+            return result.ToActionResult();
+
+        }
+
+        [HttpGet("filter-by-email")]
+        public async Task<IActionResult> FilterByEmailLike([FromQuery] string email)
+        {
+
+            var result = await _clientUseCase.FilterByEmailLike(email);
+            
+            return result.ToActionResult();
+        
+        }
+
     }
 }

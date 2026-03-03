@@ -28,7 +28,6 @@ namespace AgendaPro.Application.Clients.DTOs
 
         public string? Observations { get; set; }
 
-
         public ClientDTO() { }
 
         public ClientDTO(ClientModel model)

@@ -1,6 +1,7 @@
 ﻿using AgendaPro.Domain.Clients.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace AgendaPro.Domain.Clients.Repositories
@@ -18,5 +19,9 @@ namespace AgendaPro.Domain.Clients.Repositories
 
         Task DeleteAsync(Guid id);
 
+        Task<IEnumerable<ClientModel>> FilterByNameLike(string name);
+
+        Task<ClientModel?> FilterByEmailLike(string email);
+        
     }
 }

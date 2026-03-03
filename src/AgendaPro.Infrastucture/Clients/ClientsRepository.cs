@@ -65,5 +65,17 @@ namespace AgendaPro.Infrastucture.Clients
 
         }
 
+        public async Task<IEnumerable<ClientModel>> FilterByNameLike(string name)
+        {
+            return await _context.Clients.Where(c => c.Name.Contains(name)).ToListAsync();
+        }
+
+        public async Task<ClientModel?> FilterByEmailLike(string email)
+        {
+            // buscar email : 
+
+            return await _context.Clients.FirstOrDefaultAsync(c => c.Email != null && c.Email.Contains(email));
+        }
+
     }
 }
