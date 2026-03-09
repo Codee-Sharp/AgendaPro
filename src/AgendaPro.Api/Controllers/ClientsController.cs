@@ -45,10 +45,10 @@ namespace AgendaPro.Api.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(ClientDTO clientDTO)
+        public async Task<IActionResult> PostAsync(CreateClientRequest request)
         {
 
-            var result = await _clientUseCase.CreateAsync(clientDTO);
+            var result = await _clientUseCase.CreateAsync(request);
         
             return result.ToActionResult();
         
@@ -56,10 +56,10 @@ namespace AgendaPro.Api.Controllers
 
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, ClientDTO clientDTO)
+        public async Task<IActionResult> UpdateAsync(Guid id, UpdateClientRequest request)
         {
 
-            var result = await _clientUseCase.UpdateAsync(id, clientDTO);
+            var result = await _clientUseCase.UpdateAsync(id, request);
 
             return result.ToActionResult();
         

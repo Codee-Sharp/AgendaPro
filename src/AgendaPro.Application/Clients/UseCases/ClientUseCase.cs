@@ -21,80 +21,68 @@ namespace AgendaPro.Application.Clients.UseCases
         
         }
 
-
-        public async Task<Result<ClientDTO>> CreateAsync(ClientDTO clientDTO)
+        ///////////////// OK / FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+        public async Task<Result<ClientResponse>> CreateAsync(CreateClientRequest request)
         {
-
             var clientId = Guid.Empty;
-
             var model = new ClientModel
             (
-                clientDTO.Name,
-                clientDTO.Email,
-                clientDTO.Telephone,
-                clientDTO.Observations,
+                request.Name,
+                request.Email,
+                request.Telephone,
+                request.Observations,
                 clientId
             );
-
             await _clientRepository.SaveAsync(model);
-
-            var response = new ClientDTO(model);
-
-            return Result<ClientDTO>.Success(response);
-
+            var response = new ClientResponse(model);
+            return Result<ClientResponse>.Success(response);
         }
 
+        ///////////////// OK / FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
 
-        public async Task<Result<ClientModel>> GetByIdAsync(Guid id)
+        public async Task<Result<ClientResponse>> GetByIdAsync(Guid id)
         {
 
             var findClientById = await _clientRepository.GetByIdAsync(id);
 
             if (findClientById == null)
-            {
                 throw new KeyNotFoundException("Cliente não encontrado");
-            }
 
-            return Result<ClientModel>.Success(findClientById);
+            return Result<ClientResponse>.Success(new ClientResponse(findClientById));
         }
 
+        ///////////////// OK / FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
 
-        public async Task<Result<IEnumerable<ClientModel>>> GetAllAsync()
+        public async Task<Result<IEnumerable<ClientResponse>>>GetAllAsync()
         {
-
             var clients = await _clientRepository.GetAllAsync();
-
-            return Result<IEnumerable<ClientModel>>.Success(clients);
-
+            var response = clients.Select(client => new ClientResponse(client));
+            return Result<IEnumerable<ClientResponse>>.Success(response);
         }
 
+        ///////////////// PAREI AQUI / FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
 
-        public async Task<Result<bool>> UpdateAsync(Guid id, ClientDTO clientDTO)
+        public async Task<Result<bool>> UpdateAsync(Guid id, UpdateClientRequest request)
         {
-
             var clientToUpdate = await _clientRepository.GetByIdAsync(id);
-
             if (clientToUpdate == null)
                 throw new KeyNotFoundException("Cliente não encontrado");
 
             clientToUpdate.Update(
-                clientDTO.Name,
-                clientDTO.Email,
-                clientDTO.Telephone,
-                clientDTO.Observations
+                request.Name,
+                request.Email,
+                request.Telephone,
+                request.Observations
             );
-
             await _clientRepository.UpdateAsync(clientToUpdate);
-
             return Result<bool>.Success(true);
-
         }
 
 
         public async Task<Result<bool>> DeleteAsync(Guid id)
         {
 
-            var clientToDelete = await GetByIdAsync(id);
+            var clientToDelete = await _clientRepository.GetByIdAsync(id);
 
             if(clientToDelete == null)
                 throw new KeyNotFoundException("Cliente não encontrado");
@@ -105,7 +93,6 @@ namespace AgendaPro.Application.Clients.UseCases
 
         }
 
-        )
         public async Task<Result<IEnumerable<ClientModel>>> FilterByNameLike(string name)
         {
             var clientByName = await _clientRepository.FilterByNameLike(name);
