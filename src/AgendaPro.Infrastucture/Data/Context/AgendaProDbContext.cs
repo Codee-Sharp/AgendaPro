@@ -12,4 +12,11 @@ public class AgendaProDbContext : DbContext
 
     public DbSet<TagModel> Tags { get; set; }
     public DbSet<ServiceModel> Services { get; set; }
+    public DbSet<CategoryModel> Categories { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AgendaProDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+    }
 }
