@@ -21,7 +21,7 @@ namespace AgendaPro.Application.Clients.UseCases
         
         }
 
-        ///////////////// OK / FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
         public async Task<Result<ClientResponse>> CreateAsync(CreateClientRequest request)
         {
             var clientId = Guid.Empty;
@@ -38,7 +38,7 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<ClientResponse>.Success(response);
         }
 
-        ///////////////// OK / FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
 
         public async Task<Result<ClientResponse>> GetByIdAsync(Guid id)
         {
@@ -51,7 +51,7 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<ClientResponse>.Success(new ClientResponse(findClientById));
         }
 
-        ///////////////// OK / FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
 
         public async Task<Result<IEnumerable<ClientResponse>>>GetAllAsync()
         {
@@ -60,7 +60,7 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<IEnumerable<ClientResponse>>.Success(response);
         }
 
-        ///////////////// PAREI AQUI / FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
 
         public async Task<Result<bool>> UpdateAsync(Guid id, UpdateClientRequest request)
         {
@@ -78,7 +78,7 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<bool>.Success(true);
         }
 
-
+        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
         public async Task<Result<bool>> DeleteAsync(Guid id)
         {
 
@@ -99,10 +99,10 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<IEnumerable<ClientModel>>.Success(clientByName);
         }
 
-        public async Task<Result<ClientModel>> FilterByEmailLike(string email)
+        public async Task<Result<IEnumerable<ClientModel>>> FilterByEmailLike(string email)
         {
             var clientByEmail = await _clientRepository.FilterByEmailLike(email);
-            return Result<ClientModel>.Success(clientByEmail);
+            return Result<IEnumerable<ClientModel>>.Success(clientByEmail);
         }
 
 

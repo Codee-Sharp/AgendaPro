@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AgendaPro.Domain.Clients.Models;
+﻿using AgendaPro.Domain.Clients.Models;
 using AgendaPro.Domain.Clients.Repositories;
 using AgendaPro.Infrastucture.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AgendaPro.Infrastucture.Clients
 {
@@ -67,14 +69,19 @@ namespace AgendaPro.Infrastucture.Clients
 
         public async Task<IEnumerable<ClientModel>> FilterByNameLike(string name)
         {
-            return await _context.Clients.Where(c => c.Name.Contains(name)).ToListAsync();
+            return await _context.Clients
+                .Where(c => c.Name.StartsWith(name)).ToListAsync();
         }
 
-        public async Task<ClientModel?> FilterByEmailLike(string email)
+        public async Task<IEnumerable<ClientModel>> FilterByEmailLike(string email)
         {
             // buscar email : 
+            // Flexibilidade: Se você buscar por @gmail.com, o Contains retornará todos os clientes que usam esse provedor
+            // Facilidade de Busca: Muitos usuários buscam pelo sobrenome ou pelo domínio. Se o e - mail for joao.silva @empresa.com, buscar por silva funciona
+            // Padrão de UX: Em Dashboards Administrativos (onde funcionários buscam clientes), o comportamento esperado é que qualquer parte do texto digitada traga resultados
 
-            return await _context.Clients.FirstOrDefaultAsync(c => c.Email != null && c.Email.Contains(email));
+            return await _context.Clients
+                .Where(c => c.Email != null && c.Email.Contains(email)).ToListAsync();
         }
 
     }
