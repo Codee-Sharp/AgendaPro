@@ -14,14 +14,15 @@ namespace AgendaPro.Application.Clients.UseCases
 
         private readonly IClientRepository _clientRepository;
 
+
+
         public ClientUseCase(IClientRepository clientRepository)
         {
-
                _clientRepository = clientRepository;
-        
         }
 
-        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+
+
         public async Task<Result<ClientResponse>> CreateAsync(CreateClientRequest request)
         {
             var clientId = Guid.Empty;
@@ -38,20 +39,18 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<ClientResponse>.Success(response);
         }
 
-        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+
 
         public async Task<Result<ClientResponse>> GetByIdAsync(Guid id)
         {
-
             var findClientById = await _clientRepository.GetByIdAsync(id);
-
             if (findClientById == null)
-                throw new KeyNotFoundException("Cliente não encontrado");
+                return Result<ClientResponse>.Failure(new Error("NotFound", "Cliente não encontrado"));
 
             return Result<ClientResponse>.Success(new ClientResponse(findClientById));
         }
 
-        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+
 
         public async Task<Result<IEnumerable<ClientResponse>>>GetAllAsync()
         {
@@ -60,13 +59,13 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<IEnumerable<ClientResponse>>.Success(response);
         }
 
-        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+
 
         public async Task<Result<bool>> UpdateAsync(Guid id, UpdateClientRequest request)
         {
             var clientToUpdate = await _clientRepository.GetByIdAsync(id);
             if (clientToUpdate == null)
-                throw new KeyNotFoundException("Cliente não encontrado");
+                return Result<bool>.Failure(new Error("NotFound", "Cliente não encontrado"));
 
             clientToUpdate.Update(
                 request.Name,
@@ -78,19 +77,16 @@ namespace AgendaPro.Application.Clients.UseCases
             return Result<bool>.Success(true);
         }
 
-        ///////////////// FALTA CORRIGIR IMPLEMENTAÇÃO DE RESULT PATTERN
+
+
         public async Task<Result<bool>> DeleteAsync(Guid id)
         {
-
             var clientToDelete = await _clientRepository.GetByIdAsync(id);
-
-            if(clientToDelete == null)
-                throw new KeyNotFoundException("Cliente não encontrado");
+            if (clientToDelete == null)
+                return Result<bool>.Failure(new Error("NotFound", "Cliente não encontrado"));
 
             await _clientRepository.DeleteAsync(id);
-
             return Result<bool>.Success(true);
-
         }
 
         public async Task<Result<IEnumerable<ClientModel>>> FilterByNameLike(string name)
