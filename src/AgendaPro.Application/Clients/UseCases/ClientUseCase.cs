@@ -14,108 +14,91 @@ namespace AgendaPro.Application.Clients.UseCases
 
         private readonly IClientRepository _clientRepository;
 
+
+
         public ClientUseCase(IClientRepository clientRepository)
         {
-
                _clientRepository = clientRepository;
-        
         }
 
 
-        public async Task<Result<ClientDTO>> CreateAsync(ClientDTO clientDTO)
+
+        public async Task<Result<ClientResponse>> CreateAsync(CreateClientRequest request)
         {
-
             var clientId = Guid.Empty;
-
             var model = new ClientModel
             (
-                clientDTO.Name,
-                clientDTO.Email,
-                clientDTO.Telephone,
-                clientDTO.Observations,
+                request.Name,
+                request.Email,
+                request.Telephone,
+                request.Observations,
                 clientId
             );
-
             await _clientRepository.SaveAsync(model);
-
-            var response = new ClientDTO(model);
-
-            return Result<ClientDTO>.Success(response);
-
+            var response = new ClientResponse(model);
+            return Result<ClientResponse>.Success(response);
         }
 
 
-        public async Task<Result<ClientModel>> GetByIdAsync(Guid id)
-        {
 
+        public async Task<Result<ClientResponse>> GetByIdAsync(Guid id)
+        {
             var findClientById = await _clientRepository.GetByIdAsync(id);
-
             if (findClientById == null)
-            {
-                throw new KeyNotFoundException("Cliente não encontrado");
-            }
+                return Result<ClientResponse>.Failure(new Error("NotFound", "Cliente não encontrado"));
 
-            return Result<ClientModel>.Success(findClientById);
+            return Result<ClientResponse>.Success(new ClientResponse(findClientById));
         }
 
 
-        public async Task<Result<IEnumerable<ClientModel>>> GetAllAsync()
-        {
 
+        public async Task<Result<IEnumerable<ClientResponse>>>GetAllAsync()
+        {
             var clients = await _clientRepository.GetAllAsync();
-
-            return Result<IEnumerable<ClientModel>>.Success(clients);
-
+            var response = clients.Select(client => new ClientResponse(client));
+            return Result<IEnumerable<ClientResponse>>.Success(response);
         }
 
 
-        public async Task<Result<bool>> UpdateAsync(Guid id, ClientDTO clientDTO)
+
+        public async Task<Result<bool>> UpdateAsync(Guid id, UpdateClientRequest request)
         {
-
             var clientToUpdate = await _clientRepository.GetByIdAsync(id);
-
             if (clientToUpdate == null)
-                throw new KeyNotFoundException("Cliente não encontrado");
+                return Result<bool>.Failure(new Error("NotFound", "Cliente não encontrado"));
 
             clientToUpdate.Update(
-                clientDTO.Name,
-                clientDTO.Email,
-                clientDTO.Telephone,
-                clientDTO.Observations
+                request.Name,
+                request.Email,
+                request.Telephone,
+                request.Observations
             );
-
             await _clientRepository.UpdateAsync(clientToUpdate);
-
             return Result<bool>.Success(true);
-
         }
+
 
 
         public async Task<Result<bool>> DeleteAsync(Guid id)
         {
-
-            var clientToDelete = await GetByIdAsync(id);
-
-            if(clientToDelete == null)
-                throw new KeyNotFoundException("Cliente não encontrado");
+            var clientToDelete = await _clientRepository.GetByIdAsync(id);
+            if (clientToDelete == null)
+                return Result<bool>.Failure(new Error("NotFound", "Cliente não encontrado"));
 
             await _clientRepository.DeleteAsync(id);
-
             return Result<bool>.Success(true);
-
         }
 
-        )
         public async Task<Result<IEnumerable<ClientModel>>> FilterByNameLike(string name)
         {
             var clientByName = await _clientRepository.FilterByNameLike(name);
             return Result<IEnumerable<ClientModel>>.Success(clientByName);
         }
 
-        public async Task<Result<ClientModel>> FilterByEmailLike(string email)
+        public async Task<Result<IEnumerable<ClientModel>>> FilterByEmailLike(string email)
         {
             var clientByEmail = await _clientRepository.FilterByEmailLike(email);
-            return Result<ClientModel>.Success(clientByEmail);
+            return Result<IEnumerable<ClientModel>>.Success(clientByEmail);
         }
 
 
