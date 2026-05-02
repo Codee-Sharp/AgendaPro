@@ -8,7 +8,8 @@
   - `dotnet build AgendaPro.sln`
   - `dotnet test tests/AgendaPro.UnitTests/AgendaPro.UnitTests.csproj`
   - `dotnet test tests/AgendaPro.Tests/AgendaPro.Tests.csproj`
-- Check target frameworks before editing project files. Most projects target `net10.0`, `tests/AgendaPro.Tests` targets `net9.0`, and `Directory.Build.props` still defines a default `net8.0` target framework.
+- Use `global.json` as the SDK baseline (`10.0.100` with `latestFeature` roll-forward) to keep local and CI builds consistent.
+- Check target frameworks before editing project files. The solution is standardized on `net10.0`, including the test projects and `Directory.Build.props` defaults.
 
 ## Architecture
 
