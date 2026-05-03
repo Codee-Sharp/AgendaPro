@@ -21,7 +21,7 @@ namespace AgendaPro.Domain.Clients.Repositories
 
         Task<IEnumerable<ClientModel>> FilterByNameLike(string name);
 
-        Task<ClientModel?> FilterByEmailLike(string email);
+        Task<IEnumerable<ClientModel>> FilterByEmailLike(string email);
         
     }
 }
