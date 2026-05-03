@@ -68,6 +68,7 @@ namespace AgendaPro.Application.Services.UseCases
         public async Task<Result<IEnumerable<ServiceModel>>> GetAllAsync()
         {
             var servicesResult = await _serviceRepository.GetAllAsync();
+
             return Result<IEnumerable<ServiceModel>>.Success(servicesResult);
 
         }

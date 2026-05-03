@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "pwsh -NoProfile -File ./.github/hooks/scripts/remind-commit.ps1",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\.github\\hooks\\scripts\\remind-commit.ps1",
+        "timeout": 10
+      }
+    ]
+  }
+}
