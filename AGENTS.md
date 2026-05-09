@@ -14,7 +14,8 @@
 ## Architecture
 
 - Follow the existing layered flow: API -> Application -> Domain, with Infrastructure providing concrete implementations.
-- Read [README.md](README.md) for the high-level structure and [src/AgendaPro.Domain/Shared/ResultPattern.md](src/AgendaPro.Domain/Shared/ResultPattern.md) for the result-handling pattern instead of restating them in code comments.
+- Read [README.md](README.md) for high-level intent, but treat existing code under `src/` as the source of truth when README examples are aspirational.
+- Use [src/AgendaPro.Domain/Shared/ResultPattern.md](src/AgendaPro.Domain/Shared/ResultPattern.md) for result-handling conventions instead of restating them in code comments.
 - Keep controllers thin. The current pattern is controller -> use case -> repository, with HTTP responses produced through `ResultExtensions.ToActionResult()` and `ApiResponse<T>`.
 - New business flows should follow the existing feature slices:
   - Application: `DTOs` and `UseCase`/`UseCases`
@@ -43,4 +44,6 @@
 - `src/AgendaPro.Application/Tags/UseCase/TagUseCase.cs`
 - `src/AgendaPro.Application/Services/UseCases/ServiceUseCase.cs`
 - `src/AgendaPro.Application/Clients/UseCases/ClientUseCase.cs`
+- `src/AgendaPro.Api/Controllers/TagController.cs`
+- `src/AgendaPro.Api/Controllers/ServicesController.cs`
 - `src/AgendaPro.Infrastucture/InfrastructureExtensions.cs`

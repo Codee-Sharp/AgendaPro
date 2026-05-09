@@ -19,7 +19,7 @@ The goal is to scaffold the feature consistently and avoid a common failure mode
 ## When To Use
 
 - Add a new feature similar to Tags, Services, or Clients
-- Expand a create-only slice into a fuller CRUD slice
+- Expand a minimal slice into a fuller CRUD slice
 - Add a repository and use case pair that must be reachable from the API layer
 - Add a controller that must preserve `ResultExtensions.ToActionResult()` and `ApiResponse<T>` behavior
 
@@ -30,9 +30,9 @@ Before editing, identify:
 1. Feature name in singular and plural form
 2. Folder and namespace shape to match existing slices
 3. Endpoint scope:
-   - create-only, like Tags
+   - minimal endpoint set (for constrained MVP behavior)
    - CRUD, like Services or Clients
-   - CRUD plus filters or custom queries, like Clients
+   - CRUD plus filters or custom queries, like Clients and Tags
 4. DTO strategy:
    - one DTO reused for input and output
    - separate request and response DTOs
@@ -43,7 +43,7 @@ If the user does not specify CRUD depth, default to the smallest slice that matc
 ## Procedure
 
 1. Find the closest existing slice.
-   - Use Tags for the smallest create-only pattern.
+   - Use Tags for CRUD plus filter endpoint pattern.
    - Use Services or Clients for fuller CRUD controllers and use cases.
    - Preserve the repo's existing spelling `AgendaPro.Infrastucture`.
 
@@ -85,9 +85,9 @@ If the user does not specify CRUD depth, default to the smallest slice that matc
 
 ### Choose the slice depth
 
-- If the feature only needs creation, mirror Tags.
+- If the feature only needs a minimal subset, implement only the required operations and keep DI wired in both registration points.
 - If it needs standard CRUD, mirror Services.
-- If it needs CRUD plus filter endpoints, mirror Clients.
+- If it needs CRUD plus filter endpoints, mirror Clients or Tags.
 
 ### Choose DTO placement and naming
 
