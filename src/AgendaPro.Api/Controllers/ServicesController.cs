@@ -79,5 +79,19 @@ namespace AgendaPro.Api.Controllers
             return result.ToActionResult();
 
         }
+
+        [HttpGet("filter-by-name")]
+        public async Task<IActionResult> FilterByNameLike([FromQuery] string name)
+        {
+            var result = await _serviceUseCase.FilterByNameLike(name);
+            return result.ToActionResult();
+        }
+
+        [HttpGet("filter-by-description")]
+        public async Task<IActionResult> FilterByDescriptionLike([FromQuery] string description)
+        {
+            var result = await _serviceUseCase.FilterByDescriptionLike(description);
+            return result.ToActionResult();
+        }
     }
 }

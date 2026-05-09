@@ -69,6 +69,20 @@ namespace AgendaPro.Infrastucture.Services
 
         }
 
+        public async Task<IEnumerable<ServiceModel>> FilterByNameLike(string name)
+        {
+            return await _context.Services
+                .Where(s => s.Nome.StartsWith(name))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ServiceModel>> FilterByDescriptionLike(string description)
+        {
+            return await _context.Services
+                .Where(s => s.Descricao != null && s.Descricao.Contains(description))
+                .ToListAsync();
+        }
+
 
     }
 }

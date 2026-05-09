@@ -56,7 +56,7 @@ namespace AgendaPro.Application.Services.UseCases
 
             if (findOneService == null)
             {
-                throw new KeyNotFoundException("Serviço não encontrado");
+                return Result<ServiceModel>.Failure(new Error("NotFound", "Serviço não encontrado"));
             }
 
             return Result<ServiceModel>.Success(findOneService);
@@ -80,7 +80,7 @@ namespace AgendaPro.Application.Services.UseCases
             var serviceToUpdate = await _serviceRepository.GetByIdAsync(id);
 
             if (serviceToUpdate == null)
-                throw new KeyNotFoundException("Serviço não encontrado");
+                return Result<bool>.Failure(new Error("NotFound", "Serviço não encontrado"));
 
             serviceToUpdate.UpdateService(
                 serviceDTO.Nome,
@@ -103,15 +103,27 @@ namespace AgendaPro.Application.Services.UseCases
         public async Task<Result<bool>> DeleteAsync(Guid id)
         {
 
-            var serviceToDelete = await GetByIdAsync(id);
+            var serviceToDelete = await _serviceRepository.GetByIdAsync(id);
 
             if (serviceToDelete == null)
-                throw new KeyNotFoundException("Serviço não encontrado");
+                return Result<bool>.Failure(new Error("NotFound", "Serviço não encontrado"));
 
             await _serviceRepository.DeleteAsync(id);
 
             return Result<bool>.Success(true);
 
+        }
+
+        public async Task<Result<IEnumerable<ServiceModel>>> FilterByNameLike(string name)
+        {
+            var serviceByName = await _serviceRepository.FilterByNameLike(name);
+            return Result<IEnumerable<ServiceModel>>.Success(serviceByName);
+        }
+
+        public async Task<Result<IEnumerable<ServiceModel>>> FilterByDescriptionLike(string description)
+        {
+            var serviceByDescription = await _serviceRepository.FilterByDescriptionLike(description);
+            return Result<IEnumerable<ServiceModel>>.Success(serviceByDescription);
         }
     }
 }

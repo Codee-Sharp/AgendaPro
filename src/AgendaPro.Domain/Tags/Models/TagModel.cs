@@ -20,6 +20,11 @@ namespace AgendaPro.Domain.Tags.Models
             Name = name;
         }
 
+        public void UpdateName(string name)
+        {
+            Name = name;
+        }
+
         public void Disable(Guid disabledBy)
         {
             DisabedBy = disabledBy;

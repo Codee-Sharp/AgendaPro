@@ -23,5 +23,9 @@ namespace AgendaPro.Domain.Services.Repositories
         // delete
         Task DeleteAsync(Guid id);
 
+        Task<IEnumerable<ServiceModel>> FilterByNameLike(string name);
+
+        Task<IEnumerable<ServiceModel>> FilterByDescriptionLike(string description);
+
     }
 }
