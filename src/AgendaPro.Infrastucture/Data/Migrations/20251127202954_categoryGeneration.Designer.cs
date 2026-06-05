@@ -3,6 +3,7 @@ using System;
 using AgendaPro.Infrastucture.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AgendaPro.Infrastucture.Data.Migrations
 {
     [DbContext(typeof(AgendaProDbContext))]
-    partial class AgendaProDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251127202954_categoryGeneration")]
+    partial class categoryGeneration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,11 +31,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-            modelBuilder.Entity("AgendaPro.Domain.Clients.Models.ClientModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -49,8 +47,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("varchar(200)")
                         .HasColumnName("description");
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -59,13 +55,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(100)")
                         .HasColumnName("name");
-                        .HasColumnType("text");
-
-                    b.Property<string>("Observations")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Telephone")
-                        .HasColumnType("text");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -79,7 +68,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Categories", (string)null);
-                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("AgendaPro.Domain.Services.Models.ServiceModel", b =>
