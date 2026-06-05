@@ -22,12 +22,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AgendaPro.Domain.Services.Models.CategoryModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
             modelBuilder.Entity("AgendaPro.Domain.Clients.Models.ClientModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -46,9 +40,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("description");
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
@@ -57,8 +48,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("name");
                         .HasColumnType("text");
 
                     b.Property<string>("Observations")
@@ -75,11 +64,52 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("AgendaPro.Domain.Services.Models.CategoryModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdetadAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Categories", (string)null);
-                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("AgendaPro.Domain.Services.Models.ServiceModel", b =>
@@ -154,6 +184,12 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("DisabedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DisabedBy")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsDeleted")
