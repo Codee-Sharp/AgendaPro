@@ -61,7 +61,9 @@ namespace AgendaPro.Domain.Services.Models
         public int? CategoriaId { get; set; }
 
         public int? TempoIntervaloMin { get; set; } = 0;
-    
+
+
+        public CategoryModel Category { get; set; }
         public void UpdateService(string nome, int duracaoMin, decimal preco, string? descricao, int? categoriaId, int? tempoIntervaloMin)
         {
 
