@@ -3,6 +3,7 @@ using System;
 using AgendaPro.Infrastucture.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AgendaPro.Infrastucture.Data.Migrations
 {
     [DbContext(typeof(AgendaProDbContext))]
-    partial class AgendaProDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201121927_AddClients")]
+    partial class AddClients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,12 +25,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AgendaPro.Domain.Services.Models.CategoryModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
             modelBuilder.Entity("AgendaPro.Domain.Clients.Models.ClientModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -46,9 +43,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("description");
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
@@ -57,8 +51,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("name");
                         .HasColumnType("text");
 
                     b.Property<string>("Observations")
@@ -75,10 +67,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Categories", (string)null);
                     b.ToTable("Clients");
                 });
 
@@ -90,9 +78,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
                     b.Property<int?>("CategoriaId")
                         .HasColumnType("integer");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -133,8 +118,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Services");
                 });
 
@@ -172,17 +155,6 @@ namespace AgendaPro.Infrastucture.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("AgendaPro.Domain.Services.Models.ServiceModel", b =>
-                {
-                    b.HasOne("AgendaPro.Domain.Services.Models.CategoryModel", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

@@ -19,7 +19,7 @@ public class TagUseCaseTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Contains("Nome obrigatório", result.Errors.Select(e => e.Message));
+        Assert.Contains("O nome da tag é obrigatório", result.Errors.Select(e => e.Message));
     }
 
     [Fact]

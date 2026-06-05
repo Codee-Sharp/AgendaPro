@@ -15,10 +15,12 @@ namespace AgendaPro.Api.Controllers
     [Route("api/services")]
     public class ServicesController : ControllerBase
     {
+
         private readonly ServiceUseCase _serviceUseCase;
 
         public ServicesController( ServiceUseCase serviceUseCase)
         {
+
             _serviceUseCase = serviceUseCase;
 
         }
@@ -29,8 +31,6 @@ namespace AgendaPro.Api.Controllers
         {
 
             var result = await _serviceUseCase.GetAllAsync();
-
-
 
             return result.ToActionResult();
 
