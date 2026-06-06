@@ -1,4 +1,7 @@
 name: PR · Quality Gate
+# Esteira de qualidade para Pull Requests no AgendaPro.
+# ─ Nota: o projeto usa .NET 10 (global.json). O SDK é resolvido automaticamente
+#   via `global-json-file: global.json` em vez de fixar uma versão.
 
 on:
   pull_request:
@@ -13,7 +16,26 @@ env:
 
 jobs:
   # ─────────────────────────────────────────────
-  # JOB 1 – Build & Format
+  # JOB 1 – Validação Arquitetural
+  # Roda primeiro, independente dos outros jobs.
+  # ─────────────────────────────────────────────
+  architecture-check:
+    name: Architecture Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate layer dependencies
+        run: |
+          chmod +x scripts/validate-architecture.sh
+          bash scripts/validate-architecture.sh
+
+  # ─────────────────────────────────────────────
+  # JOB 2 – Build & Format
   # ─────────────────────────────────────────────
   build-and-format:
     name: Build & Format Check
@@ -28,6 +50,8 @@ jobs:
           fetch-depth: 0
 
       - name: Setup .NET
+        # Usa global.json (SDK 10.0.100 + latestFeature).
+        # O projeto alvo é net10.0; usar dotnet-version: '8.0.x' quebraria o build.
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
@@ -35,21 +59,20 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore AgendaPro.sln
 
-      - name: Build (Release)
+      - name: Build (Release, warnings-as-errors)
         run: dotnet build AgendaPro.sln --no-restore --configuration Release -warnaserror
 
       - name: Verify formatting
         run: dotnet format AgendaPro.sln --verify-no-changes --no-restore
-        # Se este passo falhar, execute `dotnet format AgendaPro.sln` localmente
-        # e inclua as mudanças de formatação no PR.
+        # Se falhar: execute `dotnet format AgendaPro.sln` localmente e commite as correções.
 
   # ─────────────────────────────────────────────
-  # JOB 2 – Tests & Coverage
+  # JOB 3 – Tests & Coverage
   # ─────────────────────────────────────────────
   test-and-coverage:
     name: Tests & Coverage Gate
     runs-on: ubuntu-latest
-    needs: build-and-format
+    needs: [architecture-check, build-and-format]
     permissions:
       contents: read
       pull-requests: write
@@ -66,16 +89,15 @@ jobs:
       - name: Restore
         run: dotnet restore AgendaPro.sln
 
-      # Build debug para cobertura precisa (símbolos de debug habilitados)
-      - name: Build (Debug)
-        run: dotnet build AgendaPro.sln --no-restore --configuration Debug
+      - name: Build (Release)
+        run: dotnet build AgendaPro.sln --no-restore --configuration Release
 
       # ── Testes unitários ──────────────────────
       - name: Run AgendaPro.UnitTests
         run: |
           dotnet test tests/AgendaPro.UnitTests/AgendaPro.UnitTests.csproj \
             --no-build \
-            --configuration Debug \
+            --configuration Release \
             --collect:"XPlat Code Coverage" \
             --results-directory "${{ env.RESULTS_DIR }}/UnitTests" \
             --settings coverlet.runsettings \
@@ -87,7 +109,7 @@ jobs:
         run: |
           dotnet test tests/AgendaPro.Tests/AgendaPro.Tests.csproj \
             --no-build \
-            --configuration Debug \
+            --configuration Release \
             --collect:"XPlat Code Coverage" \
             --results-directory "${{ env.RESULTS_DIR }}/IntegrationTests" \
             --settings coverlet.runsettings \
@@ -98,16 +120,20 @@ jobs:
       - name: Install ReportGenerator
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-      # ── Consolidar relatório de cobertura ─────
+      # ── Relatório de cobertura ────────────────
       - name: Generate combined coverage report
         run: |
           reportgenerator \
             -reports:"${{ env.RESULTS_DIR }}/**/coverage.cobertura.xml" \
             -targetdir:CoverageReport \
-            -reporttypes:"Cobertura;HtmlInline;MarkdownSummaryGithub" \
+            -reporttypes:"Cobertura;HtmlInline;MarkdownSummaryGithub;TextSummary" \
             -assemblyfilters:"+AgendaPro.*;-AgendaPro.Tests*;-AgendaPro.UnitTests*" \
             -title:"AgendaPro Coverage" \
             -tag:"PR-${{ github.event.pull_request.number }}"
+
+      # ── Mostrar resumo no log ─────────────────
+      - name: Print coverage summary
+        run: cat CoverageReport/Summary.txt
 
       # ── Validar cobertura mínima ──────────────
       - name: Validate coverage thresholds
@@ -118,17 +144,16 @@ jobs:
 
           tree = ET.parse('CoverageReport/Cobertura.xml')
           root = tree.getroot()
-
           failures = []
 
-          # ── 1. Cobertura global ≥ 80 % ─────────────────────────────────────
+          # 1. Global ≥ 80%
           global_rate = float(root.attrib.get('line-rate', 0))
           global_pct  = round(global_rate * 100, 2)
-          print(f'Global line coverage : {global_pct} %')
+          print(f'Global line coverage : {global_pct}%')
           if global_pct < 80:
               failures.append(f'Global coverage {global_pct}% < 80% (obrigatório)')
 
-          # ── 2. Domain e Application ≥ 85 % ─────────────────────────────────
+          # 2. Domain e Application ≥ 85%
           layer_lines = {}
           layer_hits  = {}
 
@@ -136,7 +161,10 @@ jobs:
               pkg_name = pkg.attrib.get('name', '')
               for clazz in pkg.iter('class'):
                   for layer in ('AgendaPro.Domain', 'AgendaPro.Application'):
-                      if pkg_name.startswith(layer) or clazz.attrib.get('filename','').replace('\\','/').find(layer.replace('.','/')) != -1:
+                      hit = (pkg_name.startswith(layer) or
+                             clazz.attrib.get('filename','')
+                                   .replace('\\','/').find(layer.replace('.','/')) != -1)
+                      if hit:
                           for line in clazz.iter('line'):
                               layer_lines[layer] = layer_lines.get(layer, 0) + 1
                               if int(line.attrib.get('hits', 0)) > 0:
@@ -145,24 +173,21 @@ jobs:
           for layer in ('AgendaPro.Domain', 'AgendaPro.Application'):
               total = layer_lines.get(layer, 0)
               if total == 0:
-                  print(f'{layer}: sem linhas instrumentadas (pulando validação)')
+                  print(f'{layer}: sem linhas instrumentadas — pulando validação')
                   continue
-              hits = layer_hits.get(layer, 0)
-              pct  = round(hits / total * 100, 2)
-              print(f'{layer} coverage: {pct} %')
+              pct = round(layer_hits.get(layer, 0) / total * 100, 2)
+              print(f'{layer} coverage: {pct}%')
               if pct < 85:
                   failures.append(f'{layer} coverage {pct}% < 85% (obrigatório)')
 
-          # ── Resultado final ─────────────────────────────────────────────────
           if failures:
               for f in failures:
                   print(f'::error::{f}')
               sys.exit(1)
-          else:
-              print('Todos os thresholds de cobertura foram atendidos.')
+          print('Todos os thresholds de cobertura foram atendidos.')
           EOF
 
-      # ── Publicar resumo no PR ─────────────────
+      # ── Comentar resumo no PR ─────────────────
       - name: Post coverage summary to PR
         if: always()
         uses: marocchino/sticky-pull-request-comment@v2
@@ -170,7 +195,7 @@ jobs:
           recreate: true
           path: CoverageReport/SummaryGithub.md
 
-      # ── Upload artefatos ──────────────────────
+      # ── Artifacts ────────────────────────────
       - name: Upload coverage HTML report
         if: always()
         uses: actions/upload-artifact@v4
@@ -188,28 +213,14 @@ jobs:
           retention-days: 7
 
   # ─────────────────────────────────────────────
-  # JOB 3 – Architecture Tests (opcional, ative quando o projeto NetArchTest for criado)
-  # ─────────────────────────────────────────────
-  # architecture-tests:
-  #   name: Architecture Tests
-  #   runs-on: ubuntu-latest
-  #   needs: build-and-format
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-dotnet@v4
-  #       with:
-  #         global-json-file: global.json
-  #     - run: dotnet restore AgendaPro.sln
-  #     - run: dotnet build AgendaPro.sln --no-restore
-  #     - run: dotnet test tests/AgendaPro.ArchTests/AgendaPro.ArchTests.csproj --no-build
-
-  # ─────────────────────────────────────────────
-  # JOB 4 – SonarCloud (descomente e configure SONAR_TOKEN + SONAR_PROJECT_KEY)
+  # JOB 4 – SonarCloud (opcional)
+  # Descomente e adicione os secrets SONAR_TOKEN,
+  # SONAR_PROJECT_KEY e SONAR_ORGANIZATION.
   # ─────────────────────────────────────────────
   # sonarcloud:
   #   name: SonarCloud Analysis
   #   runs-on: ubuntu-latest
-  #   needs: build-and-format
+  #   needs: [architecture-check, build-and-format]
   #   steps:
   #     - uses: actions/checkout@v4
   #       with:
@@ -229,3 +240,19 @@ jobs:
   #           -Dsonar.cs.opencover.reportsPaths=TestResults/**/coverage.opencover.xml
   #           -Dsonar.coverage.exclusions=**/Migrations/**,**/Program.cs,**/*Dto*.cs
   #           -Dsonar.newCode.referenceBranch=main
+
+  # ─────────────────────────────────────────────
+  # JOB 5 – NetArchTest (ative ao criar o projeto de testes arquiteturais)
+  # ─────────────────────────────────────────────
+  # arch-unit-tests:
+  #   name: Architecture Unit Tests
+  #   runs-on: ubuntu-latest
+  #   needs: build-and-format
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-dotnet@v4
+  #       with:
+  #         global-json-file: global.json
+  #     - run: dotnet restore AgendaPro.sln
+  #     - run: dotnet build AgendaPro.sln --no-restore --configuration Release
+  #     - run: dotnet test tests/AgendaPro.ArchTests/AgendaPro.ArchTests.csproj --no-build --configuration Release
