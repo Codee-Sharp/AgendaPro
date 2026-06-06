@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AgendaPro.Application.Clients.DTOs
 {
-    public class ClientDTO
+    public class ClientDto
     {
         public const int minimumCharactersForNumber = 8;
         
@@ -28,9 +28,9 @@ namespace AgendaPro.Application.Clients.DTOs
 
         public string? Observations { get; set; }
 
-        public ClientDTO() { }
+        public ClientDto() { }
 
-        public ClientDTO(ClientModel model)
+        public ClientDto(ClientModel model)
         {
 
             Id = model.Id;

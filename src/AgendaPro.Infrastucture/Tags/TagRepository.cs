@@ -44,8 +44,11 @@ namespace AgendaPro.Infrastucture.Tags
         public async Task DeleteAsync(Guid id)
         {
             var tagToDelete = await _context.Tags.FindAsync(id);
-            _context.Tags.Remove(tagToDelete);
-            await _context.SaveChangesAsync();
+            if (tagToDelete is not null)
+            {
+                _context.Tags.Remove(tagToDelete);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<IEnumerable<TagModel>> FilterByNameLike(string name)

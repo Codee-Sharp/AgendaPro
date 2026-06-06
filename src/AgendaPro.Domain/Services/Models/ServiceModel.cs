@@ -40,8 +40,6 @@ namespace AgendaPro.Domain.Services.Models
         }
 
 
-        public Guid Id { get; set; }
-
         // obrigatorio
         [Required]
         public string Nome { get; set; }

@@ -2,6 +2,7 @@ using System;
 
 namespace AgendaPro.Domain.Shared;
 
+#pragma warning disable CA1000 // Métodos estáticos de fábrica em tipo genérico são design intencional do Result Pattern
 public class Result<T> : Result
 {
   public T? Value { get; }
@@ -28,3 +29,4 @@ public class Result<T> : Result
         return Value!;
     }
 }
+#pragma warning restore CA1000

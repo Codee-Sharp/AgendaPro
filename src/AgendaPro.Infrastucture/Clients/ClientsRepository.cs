@@ -55,9 +55,12 @@ namespace AgendaPro.Infrastucture.Clients
 
         public async Task DeleteAsync(Guid id)
         {
-            var clientToDelete = _context.Clients.Find(id);
-            _context.Clients.Remove(clientToDelete);
-            await _context.SaveChangesAsync();
+            var clientToDelete = await _context.Clients.FindAsync(id);
+            if (clientToDelete is not null)
+            {
+                _context.Clients.Remove(clientToDelete);
+                await _context.SaveChangesAsync();
+            }
         }
 
 

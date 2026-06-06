@@ -64,8 +64,11 @@ namespace AgendaPro.Infrastucture.Services
         {
 
             var serviceToDelete = await _context.Services.FindAsync(id);
-            _context.Services.Remove(serviceToDelete);
-            await _context.SaveChangesAsync();
+            if (serviceToDelete is not null)
+            {
+                _context.Services.Remove(serviceToDelete);
+                await _context.SaveChangesAsync();
+            }
 
         }
 
