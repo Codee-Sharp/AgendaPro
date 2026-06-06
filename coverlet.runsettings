@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Configuração do Coverlet para coleta de cobertura de código.
-  Usado em: dotnet test ... --settings coverlet.runsettings
+  Usado em: dotnet test ... -settings coverlet.runsettings
 -->
 <RunSettings>
   <DataCollectionRunSettings>
