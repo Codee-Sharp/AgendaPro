@@ -112,6 +112,52 @@ EOF
 
 ---
 
+## 5.1 Cobertura em arquivos modificados
+
+Você pode validar a cobertura apenas para os arquivos de código modificados usando o relatório Cobertura e o diff do Git.
+
+```bash
+changed_files=$(git diff --name-only origin/main...HEAD | grep '^src/AgendaPro\.' | grep '\.cs$' || true)
+
+python3 - <<'PYEOF'
+import xml.etree.ElementTree as ET
+
+def normalize(path):
+    return path.replace('\\', '/').lstrip('./')
+
+changed = [normalize(path) for path in '''$changed_files'''.splitlines() if path.strip()]
+if not changed:
+    print('Nenhum arquivo de código modificado encontrado.')
+    raise SystemExit(0)
+
+root = ET.parse('CoverageReport/Cobertura.xml').getroot()
+changed_lines = 0
+changed_hits = 0
+for clazz in root.iter('class'):
+    filename = normalize(clazz.attrib.get('filename', ''))
+    if any(filename.endswith(path) or path.endswith(filename) for path in changed):
+        for line in clazz.iter('line'):
+            changed_lines += 1
+            if int(line.attrib.get('hits', 0)) > 0:
+                changed_hits += 1
+
+if changed_lines == 0:
+    print('Nenhuma linha instrumentada encontrada nos arquivos modificados.')
+    raise SystemExit(0)
+
+pct = round(changed_hits / changed_lines * 100, 2)
+print(f'Cobertura dos arquivos modificados: {pct}%')
+if pct < 80:
+    print(f'FAIL: {pct}% < 80%')
+    raise SystemExit(1)
+PYEOF
+```
+
+> Observação: o workflow do GitHub Actions deve usar `fetch-depth: 0` em `actions/checkout` para comparar corretamente contra a base do PR.
+
+
+---
+
 ## 6. Análise Estática (Roslyn + SonarAnalyzer)
 
 Os analyzers já estão habilitados via `Directory.Build.props`:

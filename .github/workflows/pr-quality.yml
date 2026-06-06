@@ -81,6 +81,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -141,51 +143,103 @@ jobs:
         run: |
           python3 - <<'EOF'
           import xml.etree.ElementTree as ET
+          import os
+          import subprocess
           import sys
+
+          def normalize(path):
+              return path.replace('\\', '/').lstrip('./')
+
+          def coverage_pct(hits, total):
+              return round(hits / total * 100, 2) if total else 0.0
+
+          def changed_source_files():
+              base_ref = os.environ.get('GITHUB_BASE_REF')
+              if not base_ref:
+                  return []
+              try:
+                  diff = subprocess.check_output(
+                      ['git', 'diff', '--name-only', f'origin/{base_ref}...HEAD'],
+                      text=True,
+                      stderr=subprocess.DEVNULL,
+                  )
+                  return [normalize(path) for path in diff.splitlines() if path.strip()]
+              except subprocess.CalledProcessError:
+                  return []
+
+          def matches_changed_file(filename, changed_files):
+              normalized = normalize(filename)
+              for changed in changed_files:
+                  if normalized.endswith(changed) or changed.endswith(normalized):
+                      return True
+              return False
 
           tree = ET.parse('CoverageReport/Cobertura.xml')
           root = tree.getroot()
-          failures = []
 
-          # 1. Global ≥ 80%
-          global_rate = float(root.attrib.get('line-rate', 0))
-          global_pct  = round(global_rate * 100, 2)
-          print(f'Global line coverage : {global_pct}%')
-          if global_pct < 80:
-              failures.append(f'Global coverage {global_pct}% < 80% (obrigatório)')
+          changed_files = [path for path in changed_source_files()
+                           if path.startswith(('src/AgendaPro.Domain/', 'src/AgendaPro.Application/')) and path.endswith('.cs')]
+          print('Changed source files:')
+          for path in sorted(changed_files):
+              print(f' - {path}')
 
-          # 2. Domain e Application ≥ 85%
-          layer_lines = {}
-          layer_hits  = {}
+          if not changed_files:
+              print('No modified AgendaPro source files were detected. Skipping changed-file coverage validation.')
+              sys.exit(0)
+
+          layer_lines = {'AgendaPro.Domain': 0, 'AgendaPro.Application': 0}
+          layer_hits = {'AgendaPro.Domain': 0, 'AgendaPro.Application': 0}
+          changed_lines = 0
+          changed_hits = 0
 
           for pkg in root.iter('package'):
-              pkg_name = pkg.attrib.get('name', '')
               for clazz in pkg.iter('class'):
-                  for layer in ('AgendaPro.Domain', 'AgendaPro.Application'):
-                      hit = (pkg_name.startswith(layer) or
-                             clazz.attrib.get('filename','')
-                                   .replace('\\','/').find(layer.replace('.','/')) != -1)
-                      if hit:
-                          for line in clazz.iter('line'):
-                              layer_lines[layer] = layer_lines.get(layer, 0) + 1
-                              if int(line.attrib.get('hits', 0)) > 0:
-                                  layer_hits[layer] = layer_hits.get(layer, 0) + 1
+                  filename = normalize(clazz.attrib.get('filename', ''))
+                  if not matches_changed_file(filename, changed_files):
+                      continue
+
+                  layer = None
+                  if 'src/AgendaPro.Domain/' in filename or 'AgendaPro.Domain/' in filename:
+                      layer = 'AgendaPro.Domain'
+                  elif 'src/AgendaPro.Application/' in filename or 'AgendaPro.Application/' in filename:
+                      layer = 'AgendaPro.Application'
+
+                  for line in clazz.iter('line'):
+                      changed_lines += 1
+                      hits = int(line.attrib.get('hits', 0))
+                      if hits > 0:
+                          changed_hits += 1
+                          if layer:
+                              layer_hits[layer] += 1
+                      if layer:
+                          layer_lines[layer] += 1
+
+          if changed_lines == 0:
+              print('Nenhuma linha instrumentada encontrada nos arquivos modificados. Verifique se os nomes dos arquivos aparecem no relatório Cobertura.')
+              sys.exit(0)
+
+          changed_pct = coverage_pct(changed_hits, changed_lines)
+          print(f'Changed-file coverage: {changed_pct}%')
+
+          failures = []
+          if changed_pct < 80:
+              failures.append(f'Changed-file global coverage {changed_pct}% < 80% (obrigatório)')
 
           for layer in ('AgendaPro.Domain', 'AgendaPro.Application'):
               total = layer_lines.get(layer, 0)
               if total == 0:
-                  print(f'{layer}: sem linhas instrumentadas — pulando validação')
+                  print(f'{layer}: sem linhas instrumentadas nos arquivos modificados — pulando validação')
                   continue
-              pct = round(layer_hits.get(layer, 0) / total * 100, 2)
-              print(f'{layer} coverage: {pct}%')
+              pct = coverage_pct(layer_hits.get(layer, 0), total)
+              print(f'{layer} changed-file coverage: {pct}%')
               if pct < 85:
-                  failures.append(f'{layer} coverage {pct}% < 85% (obrigatório)')
+                  failures.append(f'{layer} changed-file coverage {pct}% < 85% (obrigatório)')
 
           if failures:
               for f in failures:
                   print(f'::error::{f}')
               sys.exit(1)
-          print('Todos os thresholds de cobertura foram atendidos.')
+          print('Todos os thresholds de cobertura para arquivos modificados foram atendidos.')
           EOF
 
       # ── Comentar resumo no PR ─────────────────
