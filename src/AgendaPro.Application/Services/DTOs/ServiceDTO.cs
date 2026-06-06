@@ -1,4 +1,4 @@
-ï»¿using AgendaPro.Domain.Services.Models;
+using AgendaPro.Domain.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AgendaPro.Application.Services.DTOs
 {
-    public class ServiceDTO
+    public class ServiceDto
     {
 
         public Guid? Id { get; set; }
@@ -17,7 +17,7 @@ namespace AgendaPro.Application.Services.DTOs
         public string Nome { get; set; }
 
         [Required]
-        [Range(1, 480, ErrorMessage = "A duraÃ§Ã£o deve estar entre 1 e 480 minutos")] // entre 1 min e 8 horas
+        [Range(1, 480, ErrorMessage = "A duração deve estar entre 1 e 480 minutos")] // entre 1 min e 8 horas
         public int DuracaoMin { get; set; }
 
         [Required]
@@ -29,9 +29,9 @@ namespace AgendaPro.Application.Services.DTOs
 
         public int? TempoIntervaloMin { get; set; } = 0;
 
-        public ServiceDTO() { }
+        public ServiceDto() { }
 
-        public ServiceDTO(ServiceModel model)
+        public ServiceDto(ServiceModel model)
         {
 
             Id = model.Id;

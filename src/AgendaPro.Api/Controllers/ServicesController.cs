@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using AgendaPro.Domain.Services.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using AgendaPro.Infrastucture.Data.Context;
@@ -49,10 +49,10 @@ namespace AgendaPro.Api.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(ServiceDTO serviceDTO)
+        public async Task<IActionResult> PostAsync(ServiceDto ServiceDto)
         {
 
-            var result = await _serviceUseCase.CreateAsync(serviceDTO);
+            var result = await _serviceUseCase.CreateAsync(ServiceDto);
 
             return result.ToActionResult();
 
@@ -61,10 +61,10 @@ namespace AgendaPro.Api.Controllers
 
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateAsync(Guid id, ServiceDTO serviceDTO)
+        public async Task<IActionResult> UpdateAsync(Guid id, ServiceDto ServiceDto)
         {
         
-            var result = await _serviceUseCase.UpdateAsync(id, serviceDTO);
+            var result = await _serviceUseCase.UpdateAsync(id, ServiceDto);
 
             return result.ToActionResult();
         
