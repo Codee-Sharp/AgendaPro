@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Configuração do Coverlet para coleta de cobertura de código.
+  Usado em: dotnet test ... --settings coverlet.runsettings
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+
+          <!-- Formato de saída: Cobertura é compatível com ReportGenerator, SonarCloud e Azure DevOps -->
+          <Format>cobertura</Format>
+
+          <!--
+            Exclusões por assembly e namespace.
+            Sintaxe: [assembly-glob]namespace-glob
+          -->
+          <Exclude>
+            [AgendaPro.Api]AgendaPro.Api.Program;
+            [AgendaPro.Api]AgendaPro.Api.Wrappers.*;
+            [AgendaPro.Infrastucture]*Migrations*;
+            [AgendaPro.Infrastucture]*DbContext*;
+            [AgendaPro.Infrastucture]AgendaPro.Infrastucture.InfrastructureExtensions;
+            [*]*.obj.*;
+          </Exclude>
+
+          <!--
+            Exclusões por arquivo (glob relativo ao projeto).
+            Use para arquivos gerados, scaffolding e migrations.
+          -->
+          <ExcludeByFile>
+            **/Migrations/*.cs;
+            **/obj/**/*.cs;
+            **/*.Designer.cs;
+            **/Program.cs;
+          </ExcludeByFile>
+
+          <!--
+            Classes ou métodos decorados com estes atributos são excluídos.
+            Adicione [ExcludeFromCodeCoverage] em DTOs puros, config bootstrapping, etc.
+          -->
+          <ExcludeByAttribute>
+            ExcludeFromCodeCoverage;
+            GeneratedCodeAttribute;
+            CompilerGeneratedAttribute;
+            DebuggerNonUserCodeAttribute;
+          </ExcludeByAttribute>
+
+          <!-- Não inclui o próprio assembly de teste na cobertura -->
+          <IncludeTestAssembly>false</IncludeTestAssembly>
+
+          <!-- Conta cada linha uma única vez mesmo com múltiplos hits -->
+          <SingleHit>false</SingleHit>
+
+          <!-- Suporta SourceLink para navegação no relatório HTML -->
+          <UseSourceLink>true</UseSourceLink>
+
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

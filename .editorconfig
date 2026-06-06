@@ -1,10 +1,135 @@
-﻿[*.cs]
+﻿root = true
 
-# CA1848: Usar os delegados LoggerMessage
-dotnet_diagnostic.CA1848.severity = none
+# ─── Padrão universal ──────────────────────────────────────────────────────
+[*]
+charset                  = utf-8
+end_of_line              = crlf
+indent_style             = space
+indent_size              = 4
+trim_trailing_whitespace = true
+insert_final_newline     = true
 
-# VSSpell001: Spell Check
-dotnet_diagnostic.VSSpell001.severity = none
+# ─── JSON / YAML / XML ────────────────────────────────────────────────────
+[*.{json,yml,yaml,xml,props,targets,csproj,sln}]
+indent_size = 2
 
-# CS8618: O campo não anulável precisa conter um valor não nulo ao sair do construtor. Considere adicionar o modificador "obrigatório" ou declarar como anulável.
-dotnet_diagnostic.CS8618.severity = none
+# ─── Markdown ─────────────────────────────────────────────────────────────
+[*.md]
+trim_trailing_whitespace = false
+
+# ─── C# ───────────────────────────────────────────────────────────────────
+[*.cs]
+
+# Estilo geral
+dotnet_sort_system_directives_first                                    = true
+dotnet_separate_import_directive_groups                                = false
+
+# Qualificadores this. / Me.
+dotnet_style_qualification_for_field                                   = false:suggestion
+dotnet_style_qualification_for_property                                = false:suggestion
+dotnet_style_qualification_for_method                                  = false:suggestion
+dotnet_style_qualification_for_event                                   = false:suggestion
+
+# Palavras-chave integradas (string vs System.String)
+dotnet_style_predefined_type_for_locals_parameters_members             = true:warning
+dotnet_style_predefined_type_for_member_access                        = true:warning
+
+# Modificadores de acesso explícitos
+dotnet_style_require_accessibility_modifiers                           = always:warning
+dotnet_style_readonly_field                                            = true:suggestion
+
+# Expressões
+dotnet_style_object_initializer                                        = true:suggestion
+dotnet_style_collection_initializer                                    = true:suggestion
+dotnet_style_explicit_tuple_names                                      = true:warning
+dotnet_style_prefer_inferred_tuple_names                               = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names               = true:suggestion
+dotnet_style_prefer_auto_properties                                    = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method       = true:warning
+dotnet_style_prefer_conditional_expression_over_assignment             = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return                 = true:suggestion
+dotnet_style_coalesce_expression                                       = true:suggestion
+dotnet_style_null_propagation                                          = true:suggestion
+
+# ── Formatação C# ──────────────────────────────────────────────────────────
+csharp_prefer_braces                                                   = true:warning
+csharp_preserve_single_line_statements                                 = false
+csharp_preserve_single_line_blocks                                     = true
+
+# var vs tipo explícito
+csharp_style_var_for_built_in_types                                    = false:suggestion
+csharp_style_var_when_type_is_apparent                                 = true:suggestion
+csharp_style_var_elsewhere                                             = false:suggestion
+
+# Membros de expressão (expression-bodied)
+csharp_style_expression_bodied_methods                                 = false:suggestion
+csharp_style_expression_bodied_constructors                            = false:suggestion
+csharp_style_expression_bodied_operators                               = false:suggestion
+csharp_style_expression_bodied_properties                              = true:suggestion
+csharp_style_expression_bodied_indexers                                = true:suggestion
+csharp_style_expression_bodied_accessors                               = true:suggestion
+
+# Pattern matching
+csharp_style_pattern_matching_over_is_with_cast_check                  = true:warning
+csharp_style_pattern_matching_over_as_with_null_check                  = true:warning
+csharp_style_prefer_switch_expression                                  = true:suggestion
+csharp_style_prefer_pattern_matching                                   = true:suggestion
+csharp_style_prefer_not_pattern                                        = true:suggestion
+
+# Declarações de variáveis inline
+csharp_style_inlined_variable_declaration                              = true:suggestion
+
+# Descarte (_)
+csharp_style_unused_value_assignment_preference                        = discard_variable:suggestion
+csharp_style_unused_value_expression_statement_preference              = discard_variable:suggestion
+
+# Null-checking
+csharp_style_throw_expression                                          = true:suggestion
+csharp_style_conditional_delegate_call                                 = true:suggestion
+
+# using
+csharp_using_directive_placement                                       = outside_namespace:warning
+
+# Namespaces com escopo de arquivo (C# 10+)
+csharp_style_namespace_declarations                                    = file_scoped:warning
+
+# ── Regras de nomenclatura ─────────────────────────────────────────────────
+dotnet_naming_rule.interfaces_must_start_with_i.symbols                = interface_symbols
+dotnet_naming_rule.interfaces_must_start_with_i.style                  = prefix_i_style
+dotnet_naming_rule.interfaces_must_start_with_i.severity               = warning
+
+dotnet_naming_symbols.interface_symbols.applicable_kinds               = interface
+dotnet_naming_symbols.interface_symbols.applicable_accessibilities     = *
+
+dotnet_naming_style.prefix_i_style.required_prefix                     = I
+dotnet_naming_style.prefix_i_style.capitalization                      = pascal_case
+
+dotnet_naming_rule.private_fields_camel_underscore.symbols             = private_field_symbols
+dotnet_naming_rule.private_fields_camel_underscore.style               = underscore_camel_style
+dotnet_naming_rule.private_fields_camel_underscore.severity            = suggestion
+
+dotnet_naming_symbols.private_field_symbols.applicable_kinds           = field
+dotnet_naming_symbols.private_field_symbols.applicable_accessibilities = private,protected
+
+dotnet_naming_style.underscore_camel_style.required_prefix             = _
+dotnet_naming_style.underscore_camel_style.capitalization              = camel_case
+
+# ── Severidades dos analyzers Roslyn ───────────────────────────────────────
+
+# CA1848: Usar LoggerMessage delegates (custo mínimo; desabilitado)
+dotnet_diagnostic.CA1848.severity                                       = none
+
+# VSSpell001: Spell Check (múltiplos termos em PT-BR)
+dotnet_diagnostic.VSSpell001.severity                                   = none
+
+# CS8618: Campos não anuláveis sem inicialização
+dotnet_diagnostic.CS8618.severity                                       = none
+
+# CA1062: Valida argumentos de métodos públicos (nível sugestão)
+dotnet_diagnostic.CA1062.severity                                       = suggestion
+
+# CA2007: ConfigureAwait (não se aplica a ASP.NET Core)
+dotnet_diagnostic.CA2007.severity                                       = none
+
+# IDE0290: Usar construtor primário (C# 12 — sugestão até todos migrarem)
+dotnet_diagnostic.IDE0290.severity                                       = suggestion
