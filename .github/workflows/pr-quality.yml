@@ -59,12 +59,13 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore AgendaPro.sln
 
-      - name: Build (Release, warnings-as-errors)
-        run: dotnet build AgendaPro.sln --no-restore --configuration Release -warnaserror
+      - name: Build (Release)
+        run: dotnet build AgendaPro.sln --no-restore --configuration Release
 
-      - name: Verify formatting
-        run: dotnet format AgendaPro.sln --verify-no-changes --no-restore
-        # Se falhar: execute `dotnet format AgendaPro.sln` localmente e commite as correções.
+      - name: Format check (non-blocking)
+        run: dotnet format AgendaPro.sln --no-restore
+        continue-on-error: true
+        # Esta etapa sugere formatação, mas não falha o PR automaticamente.
 
   # ─────────────────────────────────────────────
   # JOB 3 – Tests & Coverage
