@@ -3,6 +3,8 @@ using AgendaPro.Application.Tags.UseCase;
 using AgendaPro.Domain.Tags.Repositories;
 using Moq;
 
+namespace AgendaPro.UnitTests.Tags;
+
 public class TagUseCaseTest
 {
     [Fact]
@@ -36,6 +38,6 @@ public class TagUseCaseTest
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal("Nova Tag", result.Value.Name);
+        Assert.Equal("Nova Tag", result.Value!.Name);
     }
 }

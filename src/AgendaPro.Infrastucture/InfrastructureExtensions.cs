@@ -25,7 +25,8 @@ public static class InfrastructureExtensions
 
     public static IServiceCollection AddConfigurationDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = configuration.GetConnectionString("PostgreSqlConnection");
+        var connectionString = configuration.GetConnectionString("PostgreSqlConnection")
+            ?? throw new InvalidOperationException("Connection string 'PostgreSqlConnection' não encontrada na configuração.");
 
         services.AddDbContext<AgendaProDbContext>(options =>
             options.UseNpgsql(connectionString));

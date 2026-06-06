@@ -1,4 +1,4 @@
-﻿using AgendaPro.Application.Services.DTOs;
+using AgendaPro.Application.Services.DTOs;
 using AgendaPro.Domain.Services.Models;
 using AgendaPro.Domain.Services.Repositories;
 using AgendaPro.Domain.Shared;
@@ -23,32 +23,32 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        public async Task<Result<ServiceDTO>> CreateAsync(ServiceDTO serviceDTO)
+        public async Task<Result<ServiceDto>> CreateAsync(ServiceDto ServiceDto)
         {
 
             var userId = Guid.Empty;
 
             var model = new ServiceModel
                 (
-                serviceDTO.Nome,
-                serviceDTO.DuracaoMin,
-                serviceDTO.Preco,
-                serviceDTO.Descricao,
-                serviceDTO.CategoriaId,
-                serviceDTO.TempoIntervaloMin,
+                ServiceDto.Nome,
+                ServiceDto.DuracaoMin,
+                ServiceDto.Preco,
+                ServiceDto.Descricao,
+                ServiceDto.CategoriaId,
+                ServiceDto.TempoIntervaloMin,
                 userId
                 );
 
             await _serviceRepository.SaveAsync(model);
 
-            var response = new ServiceDTO(model);
+            var response = new ServiceDto(model);
 
-            return Result<ServiceDTO>.Success(response);
+            return Result<ServiceDto>.Success(response);
 
         }
 
 
-        // Implementar lógica de negócio chamando IRepository
+        // Implementar l�gica de neg�cio chamando IRepository
         public async Task<Result<ServiceModel>> GetByIdAsync(Guid id)
         {
 
@@ -56,7 +56,7 @@ namespace AgendaPro.Application.Services.UseCases
 
             if (findOneService == null)
             {
-                return Result<ServiceModel>.Failure(new Error("NotFound", "Serviço não encontrado"));
+                return Result<ServiceModel>.Failure(new Error("NotFound", "Servi�o n�o encontrado"));
             }
 
             return Result<ServiceModel>.Success(findOneService);
@@ -64,7 +64,7 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        // Separar conexão de dados (repository) e lógica de negócio (use case)
+        // Separar conex�o de dados (repository) e l�gica de neg�cio (use case)
         public async Task<Result<IEnumerable<ServiceModel>>> GetAllAsync()
         {
             var servicesResult = await _serviceRepository.GetAllAsync();
@@ -74,21 +74,21 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        // Separar conexão de dados (repository) e lógica de negócio (use case)
-        public async Task<Result<bool>> UpdateAsync(Guid id, ServiceDTO serviceDTO)
+        // Separar conex�o de dados (repository) e l�gica de neg�cio (use case)
+        public async Task<Result<bool>> UpdateAsync(Guid id, ServiceDto ServiceDto)
         {
             var serviceToUpdate = await _serviceRepository.GetByIdAsync(id);
 
             if (serviceToUpdate == null)
-                return Result<bool>.Failure(new Error("NotFound", "Serviço não encontrado"));
+                return Result<bool>.Failure(new Error("NotFound", "Servi�o n�o encontrado"));
 
             serviceToUpdate.UpdateService(
-                serviceDTO.Nome,
-                serviceDTO.DuracaoMin,
-                serviceDTO.Preco,
-                serviceDTO.Descricao,
-                serviceDTO.CategoriaId,
-                serviceDTO.TempoIntervaloMin
+                ServiceDto.Nome,
+                ServiceDto.DuracaoMin,
+                ServiceDto.Preco,
+                ServiceDto.Descricao,
+                ServiceDto.CategoriaId,
+                ServiceDto.TempoIntervaloMin
             );
         
 
@@ -99,14 +99,14 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        // Separar conexão de dados (repository) e lógica de negócio (use case)
+        // Separar conex�o de dados (repository) e l�gica de neg�cio (use case)
         public async Task<Result<bool>> DeleteAsync(Guid id)
         {
 
             var serviceToDelete = await _serviceRepository.GetByIdAsync(id);
 
             if (serviceToDelete == null)
-                return Result<bool>.Failure(new Error("NotFound", "Serviço não encontrado"));
+                return Result<bool>.Failure(new Error("NotFound", "Servi�o n�o encontrado"));
 
             await _serviceRepository.DeleteAsync(id);
 

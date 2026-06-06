@@ -8,7 +8,6 @@ namespace AgendaPro.Domain.Clients.Models
 {
     public class ClientModel : AuditableEntity
     {
-        public Guid Id { get; private set; }
         public string Name { get; private set; }
         public string? Email { get; private set; }
         public string? Telephone { get; private set; }

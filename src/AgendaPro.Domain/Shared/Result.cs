@@ -22,7 +22,7 @@ namespace AgendaPro.Domain.Shared
         public static Result Combine(params Result[] results)
         {
             var errors = results.SelectMany(r => r.Errors).ToArray();
-            return errors.Any() ? Failure(errors) : Success();
+            return errors.Length != 0 ? Failure(errors) : Success();
         }
     }
 }
