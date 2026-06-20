@@ -1,7 +1,8 @@
-﻿using AgendaPro.Domain.Services.Models;
+using AgendaPro.Domain.Services.Models;
 using AgendaPro.Domain.Tags.Models;
 using AgendaPro.Domain.Clients.Models;
 using Microsoft.EntityFrameworkCore;
+using AgendaPro.Domain.Professionals;
 
 
 namespace AgendaPro.Infrastucture.Data.Context;
@@ -16,6 +17,7 @@ public class AgendaProDbContext : DbContext
     public DbSet<ServiceModel> Services { get; set; }
     public DbSet<CategoryModel> Categories { get; set; }
     public DbSet<ClientModel> Clients { get; set; }
+    public DbSet<ProfessionalModel> Professionals { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
