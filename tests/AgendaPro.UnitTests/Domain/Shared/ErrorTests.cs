@@ -4,6 +4,17 @@ namespace AgendaPro.UnitTests.Domain.Shared;
 
 public class ErrorTests
 {
+    [Fact]
+    public void Error_ShouldExposeOptionalDetails()
+    {
+        var metadata = new Dictionary<string, string> { ["value"] = "invalid" };
+        var error = new Error("E1", "Erro", "Name", metadata);
+
+        Assert.Equal("E1", error.Code);
+        Assert.Equal("Erro", error.Message);
+        Assert.Equal("Name", error.Field);
+        Assert.Same(metadata, error.Metadata);
+    }
 
     [Fact]
     public void Success_ShouldHaveNoErrors()
@@ -32,6 +43,7 @@ public class ErrorTests
 
         Assert.True(result.IsSuccess);
         Assert.Equal("Ruan", result.Value);
+        Assert.Equal("Ruan", result.GetValueOrThrow());
     }
 
     [Fact]
@@ -52,5 +64,14 @@ public class ErrorTests
 
         Assert.False(combined.IsSuccess);
         Assert.Equal(2, combined.Errors.Count);
+    }
+
+    [Fact]
+    public void Combine_ShouldReturnSuccessWhenAllResultsSucceed()
+    {
+        var combined = Result.Combine(Result.Success(), Result.Success());
+
+        Assert.True(combined.IsSuccess);
+        Assert.Empty(combined.Errors);
     }
 }
