@@ -8,15 +8,14 @@ using System.Threading.Tasks;
 
 namespace AgendaPro.Domain.Services.Models
 {
-    public class ServiceModel : AuditableEntity 
+    public class ServiceModel : BaseEntity 
     {
 
         public const int duracaoMinimaEmMinutos = 1;
         public const int duracaoMaximaEmHoras = 8;
         public const int duracaoMaximaEmMinutos = duracaoMaximaEmHoras * 60;
 
-        public ServiceModel(string nome, Guid createdBy)
-            : base(createdBy)
+        public ServiceModel(string nome)
         {
             Nome = nome;
         } 
@@ -27,9 +26,7 @@ namespace AgendaPro.Domain.Services.Models
             decimal preco,
             string? descricao,
             int? categoriaInt,
-            int? intervaloInt,
-            Guid createdBy) 
-            : base(createdBy)
+            int? intervaloInt) 
         {
             Nome = nome;
             DuracaoMin = duracaoMin;

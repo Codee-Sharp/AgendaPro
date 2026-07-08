@@ -20,12 +20,11 @@ public sealed record CreateCategoryDto
         };
     }
 
-    public CategoryModel ToModel(Guid createdBy)
+    public CategoryModel ToModel()
     {
         return new CategoryModel(
             Name,
-            Description,
-            createdBy
+            Description
         );
     }
 }

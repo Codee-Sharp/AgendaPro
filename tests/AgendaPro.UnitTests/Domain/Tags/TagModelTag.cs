@@ -12,21 +12,16 @@ namespace AgendaPro.UnitTests.Domain.Tags
         public class TagModelTests
         {
             [Fact]
-            public void Constructor_ShouldSetNameAndCreatedBy()
+            public void Constructor_ShouldSetNameAndId()
             {
                 // Arrange
                 var name = "TestTag";
-                var createdBy = Guid.NewGuid();
-
                 // Act
-                var tag = new TagModel(name, createdBy);
+                var tag = new TagModel(name);
 
                 // Assert
                 Assert.Equal(name, tag.Name);
-                Assert.Equal(createdBy, tag.CreatedBy);
-                Assert.False(tag.IsDeleted);
                 Assert.NotEqual(Guid.Empty, tag.Id);
-                Assert.True(tag.CreatedAt <= DateTimeOffset.UtcNow);
             }
         }
     }

@@ -26,8 +26,6 @@ namespace AgendaPro.Application.Services.UseCases
         public async Task<Result<ServiceDto>> CreateAsync(ServiceDto ServiceDto)
         {
 
-            var userId = Guid.Empty;
-
             var model = new ServiceModel
                 (
                 ServiceDto.Nome,
@@ -35,8 +33,7 @@ namespace AgendaPro.Application.Services.UseCases
                 ServiceDto.Preco,
                 ServiceDto.Descricao,
                 ServiceDto.CategoriaId,
-                ServiceDto.TempoIntervaloMin,
-                userId
+                ServiceDto.TempoIntervaloMin
                 );
 
             await _serviceRepository.SaveAsync(model);
@@ -48,7 +45,7 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        // Implementar lógica de negócio chamando IRepository
+        // Implementar lÃ³gica de negÃ³cio chamando IRepository
         public async Task<Result<ServiceModel>> GetByIdAsync(Guid id)
         {
 
@@ -56,7 +53,7 @@ namespace AgendaPro.Application.Services.UseCases
 
             if (findOneService == null)
             {
-                return Result<ServiceModel>.Failure(new Error("NotFound", "Serviço não encontrado"));
+                return Result<ServiceModel>.Failure(new Error("ServiÃ§o nÃ£o encontrado"));
             }
 
             return Result<ServiceModel>.Success(findOneService);
@@ -64,7 +61,7 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        // Separar conexão de dados (repository) e lógica de negócio (use case)
+        // Separar conexÃ£o de dados (repository) e lÃ³gica de negÃ³cio (use case)
         public async Task<Result<IEnumerable<ServiceModel>>> GetAllAsync()
         {
             var servicesResult = await _serviceRepository.GetAllAsync();
@@ -74,13 +71,13 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        // Separar conexão de dados (repository) e lógica de negócio (use case)
+        // Separar conexÃ£o de dados (repository) e lÃ³gica de negÃ³cio (use case)
         public async Task<Result<bool>> UpdateAsync(Guid id, ServiceDto ServiceDto)
         {
             var serviceToUpdate = await _serviceRepository.GetByIdAsync(id);
 
             if (serviceToUpdate == null)
-                return Result<bool>.Failure(new Error("NotFound", "Serviço não encontrado"));
+                return Result<bool>.Failure(new Error("ServiÃ§o nÃ£o encontrado"));
 
             serviceToUpdate.UpdateService(
                 ServiceDto.Nome,
@@ -99,14 +96,14 @@ namespace AgendaPro.Application.Services.UseCases
         }
 
 
-        // Separar conexão de dados (repository) e lógica de negócio (use case)
+        // Separar conexÃ£o de dados (repository) e lÃ³gica de negÃ³cio (use case)
         public async Task<Result<bool>> DeleteAsync(Guid id)
         {
 
             var serviceToDelete = await _serviceRepository.GetByIdAsync(id);
 
             if (serviceToDelete == null)
-                return Result<bool>.Failure(new Error("NotFound", "Serviço não encontrado"));
+                return Result<bool>.Failure(new Error("ServiÃ§o nÃ£o encontrado"));
 
             await _serviceRepository.DeleteAsync(id);
 

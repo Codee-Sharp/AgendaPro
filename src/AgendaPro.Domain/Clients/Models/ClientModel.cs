@@ -6,7 +6,7 @@ using System.Text;
 
 namespace AgendaPro.Domain.Clients.Models
 {
-    public class ClientModel : AuditableEntity
+    public class ClientModel : BaseEntity
     {
         public string Name { get; private set; }
         public string? Email { get; private set; }
@@ -15,8 +15,7 @@ namespace AgendaPro.Domain.Clients.Models
 
 
 
-        public ClientModel(string name, string? email, string? telephone, string? observations, Guid createdBy)
-            : base(createdBy)
+        public ClientModel(string name, string? email, string? telephone, string? observations)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Nome é obrigatório.", nameof(name));

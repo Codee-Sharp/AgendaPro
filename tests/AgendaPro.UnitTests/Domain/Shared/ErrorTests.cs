@@ -8,9 +8,8 @@ public class ErrorTests
     public void Error_ShouldExposeOptionalDetails()
     {
         var metadata = new Dictionary<string, string> { ["value"] = "invalid" };
-        var error = new Error("E1", "Erro", "Name", metadata);
+        var error = new Error("Erro", "Name", metadata);
 
-        Assert.Equal("E1", error.Code);
         Assert.Equal("Erro", error.Message);
         Assert.Equal("Name", error.Field);
         Assert.Same(metadata, error.Metadata);
@@ -28,12 +27,12 @@ public class ErrorTests
     [Fact]
     public void Failure_ShouldContainErrors()
     {
-        var err = new Error("E1", "Erro");
+        var err = new Error("Erro");
         var result = Result.Failure(err);
 
         Assert.False(result.IsSuccess);
         Assert.Single(result.Errors);
-        Assert.Equal("E1", result.Errors[0].Code);
+        Assert.Equal("Erro", result.Errors[0].Message);
     }
 
     [Fact]
@@ -49,7 +48,7 @@ public class ErrorTests
     [Fact]
     public void ResultT_Failure_GetValueOrThrow_ShouldThrow()
     {
-        var result = Result<string>.Failure(new Error("E1", "Erro"));
+        var result = Result<string>.Failure(new Error("Erro"));
 
         Assert.False(result.IsSuccess);
         Assert.Throws<InvalidOperationException>(() => result.GetValueOrThrow());
@@ -58,8 +57,8 @@ public class ErrorTests
     [Fact]
     public void Combine_ShouldAggregateErrors()
     {
-        var r1 = Result.Failure(new Error("E1", "Erro1"));
-        var r2 = Result.Failure(new Error("E2", "Erro2"));
+        var r1 = Result.Failure(new Error("Erro1"));
+        var r2 = Result.Failure(new Error("Erro2"));
         var combined = Result.Combine(r1, r2);
 
         Assert.False(combined.IsSuccess);

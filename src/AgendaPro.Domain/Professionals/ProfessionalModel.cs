@@ -3,7 +3,7 @@ using AgendaPro.Domain.Shared;
 
 namespace AgendaPro.Domain.Professionals;
 
-public class ProfessionalModel : AuditableEntity
+public class ProfessionalModel : BaseEntity
 {
     public string Name { get; private set; }
     public string? Email { get; private set; }
@@ -11,16 +11,16 @@ public class ProfessionalModel : AuditableEntity
     public string? Specialty { get; private set; }
     public bool IsActive { get; private set; }
 
-    private ProfessionalModel(Guid createdBy) : base(createdBy)
+    private ProfessionalModel()
     {
     }
 
-    public static Result<ProfessionalModel> Create(string name, string? email, string? phone, string? specialty, Guid createdBy)
+    public static Result<ProfessionalModel> Create(string name, string? email, string? phone, string? specialty)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result<ProfessionalModel>.Failure(new Error("REQUIRED_FIELD", "Name is required."));
+            return Result<ProfessionalModel>.Failure(new Error("Name is required."));
 
-        var professional = new ProfessionalModel(createdBy)
+        var professional = new ProfessionalModel()
         {
             Name = name,
             Email = email,
@@ -32,28 +32,24 @@ public class ProfessionalModel : AuditableEntity
         return Result<ProfessionalModel>.Success(professional);
     }
 
-    public Result Update(string name, string? email, string? phone, string? specialty, Guid updatedBy)
+    public Result Update(string name, string? email, string? phone, string? specialty)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure(new Error("REQUIRED_FIELD", "Name is required."));
+            return Result.Failure(new Error("Name is required."));
 
         Name = name;
         Email = email;
         Phone = phone;
         Specialty = specialty;
 
-        MarkUpdated(DateTimeOffset.UtcNow, updatedBy);
-
         return Result.Success();
     }
-    public void Deactivate(Guid deletedBy)
+    public void Deactivate()
     {
         IsActive = false;
-        SoftDelete(DateTimeOffset.UtcNow, deletedBy);
     }
-    public void Reactivate(Guid reactivatedBy)
+    public void Reactivate()
     {
         IsActive = true;
-        Restore(DateTimeOffset.UtcNow, reactivatedBy);
     }
 }

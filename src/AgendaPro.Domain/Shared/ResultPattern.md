@@ -88,7 +88,6 @@ public class Result<T> : Result
 
 ```csharp
 public sealed record Error(
-    string Code,
     string Message,
     string? Field = null,
     IReadOnlyDictionary<string, string>? Metadata = null
@@ -115,11 +114,10 @@ namespace AgendaPro.Application.Tags.UseCase
         {
             if (string.IsNullOrWhiteSpace(tagDto.Name))
             {
-                return Result<TagDto>.Failure(new Error("TAG001: Nome da tag não foi informado", "O nome da tag é obrigatório"));
+                return Result<TagDto>.Failure(new Error("O nome da tag é obrigatório"));
             }
 
-            var userId = Guid.Empty;
-            var model = new TagModel(tagDto.Name, userId);
+            var model = new TagModel(tagDto.Name);
 
             await tagRepository.SaveAsync(model);
 

@@ -12,10 +12,9 @@ public class ProfessionalModelTests
         var email = "profissional@email.com";
         var phone = "81999999999";
         var specialty = "especialidade";
-        var createdBy = Guid.NewGuid();
 
         // Act
-        var result = ProfessionalModel.Create(name, email, phone, specialty, createdBy);
+        var result = ProfessionalModel.Create(name, email, phone, specialty);
 
         // Assert
         Assert.True(result.IsSuccess);
@@ -30,14 +29,12 @@ public class ProfessionalModelTests
         var email = "profissional@email.com";
         var phone = "81999999999";
         var specialty = "especialidade";
-        var createdBy = Guid.NewGuid();
 
         // Act
-        var result = ProfessionalModel.Create(name, email, phone, specialty, createdBy);
+        var result = ProfessionalModel.Create(name, email, phone, specialty);
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal("REQUIRED_FIELD", result.Errors.FirstOrDefault().Code);
         Assert.Equal("Name is required.", result.Errors.FirstOrDefault().Message);
     }
 
@@ -49,37 +46,30 @@ public class ProfessionalModelTests
         var email = "profissional@email.com";
         var phone = "81999999999";
         var specialty = "especialidade";
-        var createdBy = Guid.NewGuid();
-
-        var createResult = ProfessionalModel.Create(name, email, phone, specialty, createdBy);
+        var createResult = ProfessionalModel.Create(name, email, phone, specialty);
 
         var professional = createResult.Value;
 
         var updatedName = "Profissional Atualizado";
-        var updatedBy = Guid.NewGuid();
-
         // Act
-        var updateResult = professional.Update(updatedName, email, phone, specialty, updatedBy);
+        var updateResult = professional.Update(updatedName, email, phone, specialty);
 
         // Assert
         Assert.True(updateResult.IsSuccess);
         Assert.Equal(updatedName, professional.Name);
-        Assert.Equal(updatedBy, professional.UpdatedBy);
-        Assert.NotNull(professional.UpdatedAt);
     }
 
     [Fact]
     public void Update_ShouldReturnFailure_WhenNameIsEmpty()
     {
         // Arrange
-        var professional = ProfessionalModel.Create("Profissional", null, null, null, Guid.NewGuid()).Value;
+        var professional = ProfessionalModel.Create("Profissional", null, null, null).Value;
 
         // Act
-        var result = professional.Update("", null, null, null, Guid.NewGuid());
+        var result = professional.Update("", null, null, null);
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal("REQUIRED_FIELD", result.Errors.First().Code);
         Assert.Equal("Name is required.", result.Errors.FirstOrDefault().Message);
     }
 
@@ -87,42 +77,27 @@ public class ProfessionalModelTests
     public void Deactivate_ShouldDeactivateProfessional_WhenProfessionalIsActive()
     {
         // Arrange
-        var professional = ProfessionalModel.Create("Profissional", "profissional@email.com", "81999999999", "especialidade", Guid.NewGuid()).Value;
-
-        var DeletedBy = Guid.NewGuid();
+        var professional = ProfessionalModel.Create("Profissional", "profissional@email.com", "81999999999", "especialidade").Value;
 
         // Act
-        professional.Deactivate(DeletedBy);
+        professional.Deactivate();
 
         // Assert
         Assert.False(professional.IsActive);
-        Assert.True(professional.IsDeleted);
-        Assert.Equal(DeletedBy, professional.DeletedBy);
-        Assert.NotNull(professional.DeletedAt);
-        Assert.NotNull(professional.DeletedAt);
-        Assert.Equal(DeletedBy, professional.UpdatedBy);
-        Assert.NotNull(professional.UpdatedAt);
     }
 
     [Fact]
     public void Reactivate_ShouldActivateProfessional_WhenProfessionalIsInactive()
     {
         // Arrange
-        var professional = ProfessionalModel.Create("Profissional", "profissional@email.com", "81999999999", "especialidade", Guid.NewGuid()).Value;
+        var professional = ProfessionalModel.Create("Profissional", "profissional@email.com", "81999999999", "especialidade").Value;
 
-        professional.Deactivate(Guid.NewGuid());
-
-        var reactivatedBy = Guid.NewGuid();
+        professional.Deactivate();
 
         // Act
-         professional.Reactivate(reactivatedBy);
+         professional.Reactivate();
 
         // Assert
         Assert.True(professional.IsActive);
-        Assert.False(professional.IsDeleted);
-        Assert.Equal(reactivatedBy, professional.UpdatedBy);
-        Assert.NotNull(professional.UpdatedAt);
-        Assert.Null(professional.DeletedAt);
-        Assert.Null(professional.DeletedBy);
     }
 }

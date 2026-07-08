@@ -20,9 +20,9 @@ public class CategoryUseCaseTests
         var emptyResult = await sut.GetAllAsync(CancellationToken.None);
 
         Assert.True(emptyResult.IsFailure);
-        Assert.Equal("NOT_FOUND", emptyResult.Errors[0].Code);
+        Assert.Equal("No categories found", emptyResult.Errors[0].Message);
 
-        var category = new CategoryModel("Cabelo", "Descrição", Guid.NewGuid());
+        var category = new CategoryModel("Cabelo", "Descrição");
         _repository.Setup(r => r.GetAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync([category]);
 
@@ -47,7 +47,7 @@ public class CategoryUseCaseTests
         var missing = await sut.GetByIdAsync(id, CancellationToken.None);
         Assert.True(missing.IsFailure);
 
-        var category = new CategoryModel("Cabelo", null, Guid.NewGuid());
+        var category = new CategoryModel("Cabelo", null);
         _repository.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(category);
 
@@ -63,12 +63,12 @@ public class CategoryUseCaseTests
         var sut = new CategoryUseCase(_repository.Object);
         var dto = new CreateCategoryDto { Name = "Cabelo", Description = "Descrição" };
         _repository.Setup(r => r.GetByNameAsync(dto.Name, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CategoryModel(dto.Name, null, Guid.NewGuid()));
+            .ReturnsAsync(new CategoryModel(dto.Name, null));
 
         var duplicate = await sut.CreateAsync(dto, CancellationToken.None);
 
         Assert.True(duplicate.IsFailure);
-        Assert.Equal("DUPLICATE_NAME", duplicate.Errors[0].Code);
+        Assert.Equal("A category with the same name already exists.", duplicate.Errors[0].Message);
 
         _repository.Setup(r => r.GetByNameAsync(dto.Name, It.IsAny<CancellationToken>()))
             .ReturnsAsync((CategoryModel?)null);
@@ -93,7 +93,7 @@ public class CategoryUseCaseTests
         var missing = await sut.UpdateAsync(id, dto, CancellationToken.None);
         Assert.True(missing.IsFailure);
 
-        var category = new CategoryModel("Cabelo", "Antiga", Guid.NewGuid());
+        var category = new CategoryModel("Cabelo", "Antiga");
         _repository.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(category);
 
@@ -117,7 +117,7 @@ public class CategoryUseCaseTests
         var missing = await sut.DeleteAsync(id, CancellationToken.None);
         Assert.True(missing.IsFailure);
 
-        var category = new CategoryModel("Cabelo", null, Guid.NewGuid());
+        var category = new CategoryModel("Cabelo", null);
         _repository.Setup(r => r.GetByIdAsync(id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(category);
 

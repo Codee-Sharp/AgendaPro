@@ -115,5 +115,5 @@ public class ServiceUseCaseTests
     };
 
     private static ServiceModel CreateModel() =>
-        new("Corte", 30, 50m, "Premium", 2, 10, Guid.NewGuid());
+        new("Corte", 30, 50m, "Premium", 2, 10);
 }

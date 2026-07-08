@@ -115,5 +115,5 @@ public class ClientUseCaseTests
     }
 
     private static ClientModel CreateClient(string name) =>
-        new(name, $"{name.ToLowerInvariant()}@test.com", "11999999999", "Obs", Guid.NewGuid());
+        new(name, $"{name.ToLowerInvariant()}@test.com", "11999999999", "Obs");
 }

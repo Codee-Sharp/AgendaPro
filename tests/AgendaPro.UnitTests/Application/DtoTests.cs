@@ -13,11 +13,11 @@ public class DtoTests
     [Fact]
     public void CategoryDtos_ShouldMapInBothDirections()
     {
-        var model = new CategoryModel("Cabelo", "Descrição", Guid.NewGuid());
+        var model = new CategoryModel("Cabelo", "Descrição");
 
         var dto = CategoryDto.FromModel(model);
         var createDto = CreateCategoryDto.From(model);
-        var recreated = createDto.ToModel(Guid.NewGuid());
+        var recreated = createDto.ToModel();
         var updateDto = new UpdateCategoryDto { Name = "Barba", Description = "Nova" };
 
         Assert.Equal(model.Id, dto.Id);
@@ -34,7 +34,7 @@ public class DtoTests
     [Fact]
     public void ClientDtos_ShouldExposeAndMapAllProperties()
     {
-        var model = new ClientModel("Ana", "ana@test.com", "11999999999", "Obs", Guid.NewGuid());
+        var model = new ClientModel("Ana", "ana@test.com", "11999999999", "Obs");
         var dto = new ClientDto(model);
         var emptyDto = new ClientDto
         {
@@ -87,7 +87,7 @@ public class DtoTests
     [Fact]
     public void ServiceAndTagDtos_ShouldExposeAndMapAllProperties()
     {
-        var serviceModel = new ServiceModel("Corte", 30, 50m, "Descrição", 2, 10, Guid.NewGuid());
+        var serviceModel = new ServiceModel("Corte", 30, 50m, "Descrição", 2, 10);
         var serviceDto = new ServiceDto(serviceModel);
         var emptyServiceDto = new ServiceDto
         {
@@ -99,7 +99,7 @@ public class DtoTests
             CategoriaId = 3,
             TempoIntervaloMin = 5
         };
-        var tagModel = new TagModel("VIP", Guid.NewGuid());
+        var tagModel = new TagModel("VIP");
         var tagDto = new TagDto(tagModel);
         var emptyTagDto = new TagDto { Id = tagModel.Id, Name = "Premium" };
 

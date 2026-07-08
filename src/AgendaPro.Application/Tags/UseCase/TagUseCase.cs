@@ -1,4 +1,4 @@
-﻿using AgendaPro.Application.Tags.Dtos;
+using AgendaPro.Application.Tags.Dtos;
 using AgendaPro.Domain.Shared;
 using AgendaPro.Domain.Tags.Models;
 using AgendaPro.Domain.Tags.Repositories;
@@ -11,11 +11,10 @@ namespace AgendaPro.Application.Tags.UseCase
         {
             if (string.IsNullOrWhiteSpace(tagDto.Name))
             {
-                return Result<TagDto>.Failure(new Error("TAG001: Nome da tag não foi informado", "O nome da tag é obrigatório"));
+                return Result<TagDto>.Failure(new Error("O nome da tag é obrigatório"));
             }
 
-            var userId = Guid.Empty;
-            var model = new TagModel(tagDto.Name, userId);
+            var model = new TagModel(tagDto.Name);
 
             await tagRepository.SaveAsync(model);
 
@@ -30,7 +29,7 @@ namespace AgendaPro.Application.Tags.UseCase
 
             if (findTagById == null)
             {
-                return Result<TagDto>.Failure(new Error("NotFound", "Tag não encontrada"));
+                return Result<TagDto>.Failure(new Error("Tag não encontrada"));
             }
 
             return Result<TagDto>.Success(new TagDto(findTagById));
@@ -48,14 +47,14 @@ namespace AgendaPro.Application.Tags.UseCase
         {
             if (string.IsNullOrWhiteSpace(tagDto.Name))
             {
-                return Result<bool>.Failure(new Error("TAG001: Nome da tag não foi informado", "O nome da tag é obrigatório"));
+                return Result<bool>.Failure(new Error("O nome da tag é obrigatório"));
             }
 
             var tagToUpdate = await tagRepository.GetByIdAsync(id);
 
             if (tagToUpdate == null)
             {
-                return Result<bool>.Failure(new Error("NotFound", "Tag não encontrada"));
+                return Result<bool>.Failure(new Error("Tag não encontrada"));
             }
 
             tagToUpdate.UpdateName(tagDto.Name);
@@ -70,7 +69,7 @@ namespace AgendaPro.Application.Tags.UseCase
 
             if (tagToDelete == null)
             {
-                return Result<bool>.Failure(new Error("NotFound", "Tag não encontrada"));
+                return Result<bool>.Failure(new Error("Tag não encontrada"));
             }
 
             await tagRepository.DeleteAsync(id);

@@ -1,4 +1,4 @@
-﻿using AgendaPro.Application.Categories.DTOs;
+using AgendaPro.Application.Categories.DTOs;
 using AgendaPro.Application.Tags.Dtos;
 using AgendaPro.Domain.Services.Models;
 using AgendaPro.Domain.Services.Repositories;
@@ -19,7 +19,7 @@ public class CategoryUseCase
         var categories = await _categoryRepository.GetAllAsync(cancellationToken);
 
         if(categories is null || !categories.Any())
-            return Result<IEnumerable<CategoryDto>>.Failure(new Error("NOT_FOUND","No categories found"));
+            return Result<IEnumerable<CategoryDto>>.Failure(new Error("No categories found"));
        
         var model = categories.Select(c => new CategoryDto
         {
@@ -36,7 +36,7 @@ public class CategoryUseCase
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
 
         if (category is null)
-            return Result<CategoryDto>.Failure(new Error("NOT_FOUND", "Category not found"));
+            return Result<CategoryDto>.Failure(new Error("Category not found"));
 
         var response = CategoryDto.FromModel(category);
         
@@ -49,11 +49,9 @@ public class CategoryUseCase
         var existingCategory = await _categoryRepository.GetByNameAsync(categoryDTO.Name, cancellationToken);
 
         if(existingCategory != null) 
-            return Result<CategoryDto>.Failure(new Error("DUPLICATE_NAME", "A category with the same name already exists."));
+            return Result<CategoryDto>.Failure(new Error("A category with the same name already exists."));
 
-        var userId = Guid.Empty; // enquanto nao implementa autenticacao
-
-        var model = categoryDTO.ToModel(userId);
+        var model = categoryDTO.ToModel();
        
         _categoryRepository.Add(model);
 
@@ -69,7 +67,7 @@ public class CategoryUseCase
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
 
         if (category is null)
-            return Result<CategoryDto>.Failure(new Error("NOT_FOUND", "Category not found"));
+            return Result<CategoryDto>.Failure(new Error("Category not found"));
 
         category.Update(categoryDTO.Name, categoryDTO.Description);
 
@@ -88,7 +86,7 @@ public class CategoryUseCase
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
 
         if (category is null)
-            return Result<bool>.Failure(new Error("NOT_FOUND", "Category not found"));
+            return Result<bool>.Failure(new Error("Category not found"));
 
         _categoryRepository.Delete(category);
 

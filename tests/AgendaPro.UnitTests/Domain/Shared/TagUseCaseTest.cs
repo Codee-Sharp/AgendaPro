@@ -54,7 +54,7 @@ public class TagUseCaseTest
         var missing = await useCase.GetByIdAsync(id);
         Assert.True(missing.IsFailure);
 
-        var tag = new TagModel("VIP", Guid.NewGuid());
+        var tag = new TagModel("VIP");
         repoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(tag);
 
         var result = await useCase.GetByIdAsync(id);
@@ -68,7 +68,7 @@ public class TagUseCaseTest
     {
         var repoMock = new Mock<ITagRepository>();
         var useCase = new TagUseCase(repoMock.Object);
-        var tag = new TagModel("VIP", Guid.NewGuid());
+        var tag = new TagModel("VIP");
         repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([tag]);
         repoMock.Setup(r => r.FilterByNameLike("VI")).ReturnsAsync([tag]);
 
@@ -93,7 +93,7 @@ public class TagUseCaseTest
         var missing = await useCase.UpdateAsync(id, new TagDto { Name = "Premium" });
         Assert.True(missing.IsFailure);
 
-        var tag = new TagModel("VIP", Guid.NewGuid());
+        var tag = new TagModel("VIP");
         repoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(tag);
 
         var result = await useCase.UpdateAsync(id, new TagDto { Name = "Premium" });
@@ -114,7 +114,7 @@ public class TagUseCaseTest
         var missing = await useCase.DeleteAsync(id);
         Assert.True(missing.IsFailure);
 
-        repoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(new TagModel("VIP", Guid.NewGuid()));
+        repoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(new TagModel("VIP"));
 
         var result = await useCase.DeleteAsync(id);
 

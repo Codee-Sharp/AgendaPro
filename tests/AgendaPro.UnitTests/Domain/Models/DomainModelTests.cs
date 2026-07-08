@@ -10,14 +10,13 @@ public class DomainModelTests
     [Fact]
     public void ClientModel_ShouldCreateAndUpdate()
     {
-        var createdBy = Guid.NewGuid();
-        var client = new ClientModel("Ana", "ana@test.com", "11999999999", "Inicial", createdBy);
+        var client = new ClientModel("Ana", "ana@test.com", "11999999999", "Inicial");
 
         Assert.Equal("Ana", client.Name);
         Assert.Equal("ana@test.com", client.Email);
         Assert.Equal("11999999999", client.Telephone);
         Assert.Equal("Inicial", client.Observations);
-        Assert.Equal(createdBy, client.CreatedBy);
+        Assert.NotEqual(Guid.Empty, client.Id);
 
         client.Update("Maria", "maria@test.com", "11888888888", "Atualizado");
 
@@ -34,13 +33,13 @@ public class DomainModelTests
     public void ClientModel_ShouldRejectEmptyName(string? name)
     {
         Assert.Throws<ArgumentException>(
-            () => new ClientModel(name!, null, null, null, Guid.NewGuid()));
+            () => new ClientModel(name!, null, null, null));
     }
 
     [Fact]
     public void CategoryModel_ShouldCreateAndUpdateOnlyProvidedValues()
     {
-        var category = new CategoryModel("Cabelo", "Descrição", Guid.NewGuid());
+        var category = new CategoryModel("Cabelo", "Descrição");
 
         Assert.Equal("Cabelo", category.Name);
         Assert.Equal("Descrição", category.Description);
@@ -57,13 +56,12 @@ public class DomainModelTests
     [Fact]
     public void ServiceModel_ShouldCreateUsingBothConstructorsAndUpdate()
     {
-        var createdBy = Guid.NewGuid();
-        var simple = new ServiceModel("Corte", createdBy);
+        var simple = new ServiceModel("Corte");
 
         Assert.Equal("Corte", simple.Nome);
-        Assert.Equal(createdBy, simple.CreatedBy);
+        Assert.NotEqual(Guid.Empty, simple.Id);
 
-        var service = new ServiceModel("Barba", 30, 50m, "Completa", 2, 10, createdBy);
+        var service = new ServiceModel("Barba", 30, 50m, "Completa", 2, 10);
 
         Assert.Equal("Barba", service.Nome);
         Assert.Equal(30, service.DuracaoMin);
@@ -73,7 +71,7 @@ public class DomainModelTests
         Assert.Equal(10, service.TempoIntervaloMin);
 
         service.UpdateService("Cabelo", 45, 75m, "Premium", 3, 15);
-        var category = new CategoryModel("Categoria", null, createdBy);
+        var category = new CategoryModel("Categoria", null);
         service.Category = category;
 
         Assert.Equal("Cabelo", service.Nome);
@@ -88,7 +86,7 @@ public class DomainModelTests
     [Fact]
     public void TagModel_ShouldUpdateDisableAndEnable()
     {
-        var tag = new TagModel("Inicial", Guid.NewGuid());
+        var tag = new TagModel("Inicial");
         var disabledBy = Guid.NewGuid();
 
         tag.UpdateName("Atualizada");
@@ -105,31 +103,13 @@ public class DomainModelTests
     }
 
     [Fact]
-    public void AuditableEntity_ShouldTrackCreationUpdateAndDeletion()
+    public void BaseEntity_ShouldSetId()
     {
-        var entity = new TestAuditableEntity(Guid.NewGuid(), Guid.NewGuid());
-        var createdAt = DateTimeOffset.UtcNow.AddDays(-2);
-        var updatedAt = DateTimeOffset.UtcNow.AddDays(-1);
-        var deletedAt = DateTimeOffset.UtcNow;
-        var createdBy = Guid.NewGuid();
-        var updatedBy = Guid.NewGuid();
-        var deletedBy = Guid.NewGuid();
+        var id = Guid.NewGuid();
+        var entity = new TestBaseEntity(id);
 
-        entity.MarkCreated(createdAt, createdBy);
-        Assert.Equal(createdAt, entity.CreatedAt);
-        Assert.Equal(createdBy, entity.UpdatedBy);
-        Assert.False(entity.IsDeleted);
-
-        entity.MarkUpdated(updatedAt, updatedBy);
-        Assert.Equal(updatedAt, entity.UpdetadAt);
-        Assert.Equal(updatedBy, entity.UpdatedBy);
-
-        entity.SoftDelete(deletedAt, deletedBy);
-        Assert.True(entity.IsDeleted);
-        Assert.Equal(deletedAt, entity.DeletedAt);
-        Assert.Equal(deletedBy, entity.DeletedBy);
+        Assert.Equal(id, entity.Id);
     }
 
-    private sealed class TestAuditableEntity(Guid id, Guid createdBy)
-        : AuditableEntity<Guid>(id, createdBy);
+    private sealed class TestBaseEntity(Guid id) : BaseEntity(id);
 }

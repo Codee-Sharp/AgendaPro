@@ -1,4 +1,4 @@
-﻿using AgendaPro.Application.Clients.DTOs;
+using AgendaPro.Application.Clients.DTOs;
 using AgendaPro.Domain.Clients.Models;
 using AgendaPro.Domain.Clients.Repositories;
 using AgendaPro.Domain.Shared;
@@ -25,14 +25,12 @@ namespace AgendaPro.Application.Clients.UseCases
 
         public async Task<Result<ClientResponse>> CreateAsync(CreateClientRequest request)
         {
-            var clientId = Guid.Empty;
             var model = new ClientModel
             (
                 request.Name,
                 request.Email,
                 request.Telephone,
-                request.Observations,
-                clientId
+                request.Observations
             );
             await _clientRepository.SaveAsync(model);
             var response = new ClientResponse(model);
@@ -45,7 +43,7 @@ namespace AgendaPro.Application.Clients.UseCases
         {
             var findClientById = await _clientRepository.GetByIdAsync(id);
             if (findClientById == null)
-                return Result<ClientResponse>.Failure(new Error("NotFound", "Cliente não encontrado"));
+                return Result<ClientResponse>.Failure(new Error("Cliente não encontrado"));
 
             return Result<ClientResponse>.Success(new ClientResponse(findClientById));
         }
@@ -65,7 +63,7 @@ namespace AgendaPro.Application.Clients.UseCases
         {
             var clientToUpdate = await _clientRepository.GetByIdAsync(id);
             if (clientToUpdate == null)
-                return Result<bool>.Failure(new Error("NotFound", "Cliente não encontrado"));
+                return Result<bool>.Failure(new Error("Cliente não encontrado"));
 
             clientToUpdate.Update(
                 request.Name,
@@ -83,7 +81,7 @@ namespace AgendaPro.Application.Clients.UseCases
         {
             var clientToDelete = await _clientRepository.GetByIdAsync(id);
             if (clientToDelete == null)
-                return Result<bool>.Failure(new Error("NotFound", "Cliente não encontrado"));
+                return Result<bool>.Failure(new Error("Cliente não encontrado"));
 
             await _clientRepository.DeleteAsync(id);
             return Result<bool>.Success(true);

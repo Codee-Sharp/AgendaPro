@@ -1,4 +1,4 @@
-﻿using AgendaPro.Domain.Common;
+using AgendaPro.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AgendaPro.Domain.Tags.Models
 {
-    public class TagModel : AuditableEntity
+    public class TagModel : BaseEntity
     {
         public string Name { get; protected set; }
 
@@ -15,7 +15,7 @@ namespace AgendaPro.Domain.Tags.Models
 
         public DateTimeOffset? DisabedAt { get; set; }
 
-        public TagModel(string name, Guid createdBy) : base(createdBy)
+        public TagModel(string name)
         {
             Name = name;
         }
