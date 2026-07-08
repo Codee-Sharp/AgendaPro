@@ -9,26 +9,12 @@ namespace AgendaPro.Api.Extensions
         public static IActionResult ToActionResult<T>(this Result<T> result)
         {
             if (result.IsSuccess)
-            {
-                var responseSuccess = new ApiResponse<T?>(result.Value);
-                return new OkObjectResult(responseSuccess);
-            }
+                return new OkObjectResult(new ApiResponse<T?>(result.Value));
 
-            if (result.Errors.Any(error => IsNotFound(error.Message)))
-            {
-                return new NotFoundObjectResult(new ApiResponse<T?>(result.Errors.Select(e => e.Message).ToList()));
-            }
+            var errors = result.Errors.Select(error => error.Message).ToList();
+            var response = new ApiResponse<T?>(errors);
 
-            var errors = result.Errors.Select(e => e.Message);
-            var responseFail = new ApiResponse<T?>([.. errors]);
-            return new BadRequestObjectResult(responseFail);
-        }
-
-        private static bool IsNotFound(string message)
-        {
-            return message.Contains("not found", StringComparison.OrdinalIgnoreCase)
-                || message.Contains("não encontrada", StringComparison.OrdinalIgnoreCase)
-                || message.Contains("não encontrado", StringComparison.OrdinalIgnoreCase);
+            return new BadRequestObjectResult(response);
         }
     }
 }
