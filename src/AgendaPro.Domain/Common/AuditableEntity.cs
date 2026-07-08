@@ -38,7 +38,7 @@ namespace AgendaPro.Domain.Common
         public DateTimeOffset CreatedAt { get; protected set; }
         public Guid CreatedBy { get; protected set; }
 
-        public DateTimeOffset? UpdetadAt { get; protected set; }
+        public DateTimeOffset? UpdatedAt { get; protected set; }
         public Guid? UpdatedBy { get; protected set; }
 
         public DateTimeOffset? DeletedAt { get; protected set; }
@@ -52,7 +52,7 @@ namespace AgendaPro.Domain.Common
             CreatedAt = DateTimeOffset.UtcNow;
             CreatedBy = createdBy;
 
-            UpdetadAt = null;
+            UpdatedAt = null;
             UpdatedBy = null;
 
             DeletedAt = null;
@@ -60,25 +60,36 @@ namespace AgendaPro.Domain.Common
             IsDeleted = false;
         }
 
-        public void MarkCreated(DateTimeOffset now, Guid? user)
+        protected void MarkCreated(DateTimeOffset now, Guid? user)
         {
             CreatedAt = now;
             UpdatedBy = user;
             IsDeleted = false;
         }
 
-        public void MarkUpdated(DateTimeOffset now, Guid? User)
+        protected void MarkUpdated(DateTimeOffset now, Guid? User)
         {
-            UpdetadAt = now;
+            UpdatedAt = now;
             UpdatedBy = User;
 
         }
 
-        public void SoftDelete(DateTimeOffset now, Guid? User)
+        protected void SoftDelete(DateTimeOffset now, Guid? User)
         {
             IsDeleted = true;
             DeletedAt = now;
             DeletedBy = User;
+
+            MarkUpdated(now, User);
+        }
+
+        protected void Restore(DateTimeOffset now, Guid restoredBy)
+        {
+            IsDeleted = false;
+            DeletedAt = null;
+            DeletedBy = null;
+
+            MarkUpdated(now, restoredBy);
         }
     }
 }
