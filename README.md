@@ -259,6 +259,21 @@ git commit -m "refactor(repository): simplify async pattern"
 
 ## 🔑Configuração do JWT
 
+O arquivo `appsettings.json` deve conter a configuração abaixo:
+
+```json
+{
+  "Jwt": {
+    "Issuer": "AgendaPro",
+    "Audience": "AgendaPro.Api",
+    "ExpirationMinutes": 60
+  }
+}
+```
+
+A propriedade `Jwt:Secret` **não deve** ser adicionada ao `appsettings.json`. Ela deve ser configurada exclusivamente por meio dos User Secrets (desenvolvimento) ou por variáveis de ambiente (produção).
+
+
 **Inicialização**
 ```bash
 dotnet user-secrets init
