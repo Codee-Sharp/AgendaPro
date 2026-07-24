@@ -254,7 +254,19 @@ git commit -m "feat(appointment): implement scheduling validation"
 git commit -m "fix(client): correct phone number format validation"
 git commit -m "refactor(repository): simplify async pattern"
 ```
+---
 
+
+## 🔑Configuração do JWT
+
+**Inicialização**
+```bash
+dotnet user-secrets init
+```
+**Configuração da Secret**
+```bash
+dotnet user-secrets set "Jwt:Secret" "<sua-chave>"
+```
 ---
 
 ## 🧱 **Tecnologias Recomendadas**
